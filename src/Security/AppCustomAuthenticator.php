@@ -71,7 +71,7 @@ class AppCustomAuthenticator extends AbstractGuardAuthenticator
         if($request->getPathInfo() === $this->router->generate('login')) {
             $request->getSession()->set('username', $request->request->get('username'));
 
-            return new RedirectResponse('/post');;
+            return new RedirectResponse('/');;
         }
         return null;
     }

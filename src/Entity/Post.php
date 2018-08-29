@@ -35,9 +35,28 @@ class Post
      */
     private $description;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isActive;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isDraftEntry;
+
+    /**
+     * Many Posts have One User.
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="posts")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     */
+    private $user;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
+        $this->isActive = false;
+        $this->isActive = true;
     }
 
     public function getId(): ?int
@@ -97,5 +116,41 @@ class Post
 
     public function __toString () {
         return $this->title;
+    }
+
+    public function getIsActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function getIsDraftEntry(): ?bool
+    {
+        return $this->isDraftEntry;
+    }
+
+    public function setIsDraftEntry(bool $isDraftEntry): self
+    {
+        $this->isDraftEntry = $isDraftEntry;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
     }
 }

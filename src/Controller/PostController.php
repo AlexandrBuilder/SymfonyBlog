@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Form\PostType;
 use App\Repository\PostRepository;
+use App\Security\Voter\PostVoter;
+use App\Services\PostService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +15,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PostController extends Controller
 {
+    private $postService;
+
+    public function __construct(PostService $postService)
+    {
+        $this->postService = $postService;
+    }
+
     /**
      * @Route("/", name="homepage", methods="GET")
      */
@@ -31,6 +40,7 @@ class PostController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $post = $this->postService->addUser($post);
             $em = $this->getDoctrine()->getManager();
             $em->persist($post);
             $em->flush();
@@ -57,6 +67,8 @@ class PostController extends Controller
      */
     public function edit(Request $request, Post $post): Response
     {
+        $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
+
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
