@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Post{% endblock %}
+
+{% block body %}
+    <div class="post-change">
+        <h2>Create new Post</h2>
+
+        {{ include('post/_form.html.twig') }}
+
+        <a href="{{ path('homepage') }}">back to list</a>
+    </div>
+{% endblock %}

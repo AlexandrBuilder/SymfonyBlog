@@ -3,6 +3,12 @@
     <div class="auth">
         <h2>Create your personal account</h2>
 
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+
         <div class="row">
             <div class="col-sm-12 col-md-8 col-lg-6">
                 {{ form_start(form) }}

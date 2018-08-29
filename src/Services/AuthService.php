@@ -9,6 +9,7 @@
 namespace App\Services;
 
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Entity;
@@ -24,9 +25,9 @@ class AuthService
         $this->entityManager = $entityManager;
     }
 
-    public function activateUser($user) {
+    public function activateUser(User $user) {
         $user=$user->setVerificationToken('');
-//        $this->entityManager->persist($user);
-//        $this->entityManager->flush();
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
     }
 }

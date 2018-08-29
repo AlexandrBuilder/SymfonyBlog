@@ -1,0 +1,15 @@
+{{ form_start(form) }}
+    <div class="form-group">
+        {{ form_label(form.title) }}
+        {{ form_widget(form.title, {attr:{class:'form-control', placeholder:"Enter title"}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.tags) }}
+        {{ form_widget(form.tags, {attr: {class : 'form-control multy-select2',  placeholder:"Select tags"}}) }}
+    </div>
+    <div class="form-group">
+        {{ form_label(form.description) }}
+        {{ form_widget(form.description,  {attr:{class:'form-control', placeholder:"Enter description"}}) }}
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+{{ form_end(form) }}

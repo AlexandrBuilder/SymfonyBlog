@@ -12,6 +12,7 @@ namespace App\Controller;
 
 use App\Form\UserType;
 use App\Entity\User;
+use App\Services\AuthService;
 use App\Services\RegisterEmail;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,10 +27,12 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class AuthController  extends AbstractController
 {
     private $registerEmail;
+    private $authService;
 
-    public function __construct(RegisterEmail $registerEmail)
+    public function __construct(RegisterEmail $registerEmail, AuthService $authService)
     {
         $this->registerEmail = $registerEmail;
+        $this->authService = $authService;
     }
 
     /**
@@ -38,7 +41,7 @@ class AuthController  extends AbstractController
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function registerAction(Request $request, UserPasswordEncoderInterface $passwordEncoder, \Swift_Mailer $mailer)
+    public function registerAction(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -52,7 +55,10 @@ class AuthController  extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             $this->registerEmail->sendMail($user);
-
+            $this->addFlash(
+                'success',
+                'Your account was successfully created. And you have sent messages to confirm your mail.'
+            );
             return $this->redirectToRoute('registration');
         }
 
@@ -87,14 +93,20 @@ class AuthController  extends AbstractController
 
     /**
      * @Route("/verification/{verificationToken}", name="verification")
+     * @param $verificationToken
+     * @return Response
      */
     public function verificationAction($verificationToken) {
+        $this->entityManager = $this
+            ->getDoctrine()
+            ->getManager();
         $repository = $this->entityManager->getRepository(User::class);
         $user = $repository->findByVerificationToken($verificationToken);
         if(empty($user)) {
             throw new BadRequestHttpException("User not find");
         }
         $user = $user[0];
+        $this->authService->activateUser($user);
         return $this->render('auth/success_register.html.twig', [
             'user' => $user
         ]);

@@ -42,22 +42,28 @@ class AppCustomAuthenticator extends AbstractGuardAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        if(!strlen($credentials['email'])) {
+        if (!strlen($credentials['email'])) {
             throw new AuthenticationException('Email is empty');
         }
-        if(!strlen($credentials['password'])) {
-            throw new AuthenticationException('Email is empty');
+        if (!strlen($credentials['password'])) {
+            throw new AuthenticationException('Password is empty');
         }
         $user = $this->repositoryUser->findOneByEmail([$credentials['email']]);
+        if(!isset($user)) {
+            throw new AuthenticationException('This account not exist');
+        }
         return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
     {
         if(!$user->isActive()) {
-            throw new AuthenticationException('Password not verified');
+            throw new AuthenticationException('Account not verified');
         }
-        return password_verify($credentials['password'], $user->getPassword());
+        if(!password_verify($credentials['password'], $user->getPassword())) {
+            throw new AuthenticationException('Invalid user data');
+        }
+        return true;
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
