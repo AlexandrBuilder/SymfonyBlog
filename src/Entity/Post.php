@@ -11,6 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Post
 {
+    const CONST_DRAFT = 'Draft';
+    const CONST_CHECKING = 'Checking';
+    const CONST_VERIFIED = 'Verified';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -36,14 +40,9 @@ class Post
     private $description;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="string", length=60)
      */
-    private $isActive;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $isDraftEntry;
+    private $status;
 
     /**
      * Many Posts have One User.
@@ -55,8 +54,7 @@ class Post
     public function __construct()
     {
         $this->tags = new ArrayCollection();
-        $this->isActive = false;
-        $this->isActive = true;
+        $this->status = self::CONST_DRAFT;
     }
 
     public function getId(): ?int
@@ -118,30 +116,6 @@ class Post
         return $this->title;
     }
 
-    public function getIsActive(): ?bool
-    {
-        return $this->isActive;
-    }
-
-    public function setIsActive(bool $isActive): self
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    public function getIsDraftEntry(): ?bool
-    {
-        return $this->isDraftEntry;
-    }
-
-    public function setIsDraftEntry(bool $isDraftEntry): self
-    {
-        $this->isDraftEntry = $isDraftEntry;
-
-        return $this;
-    }
-
     public function getUser(): ?User
     {
         return $this->user;
@@ -152,5 +126,36 @@ class Post
         $this->user = $user;
 
         return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public static function getPostStatus()
+    {
+        return [
+            self::CONST_DRAFT => Post::CONST_DRAFT,
+            self::CONST_CHECKING => Post::CONST_CHECKING,
+            self::CONST_VERIFIED => Post::CONST_VERIFIED
+        ];
+    }
+
+    public function isEditMode()
+    {
+        return self::CONST_DRAFT == $this->status || self::CONST_CHECKING == $this->status;
+    }
+
+    public function isVerified()
+    {
+        return self::CONST_VERIFIED == $this->status;
     }
 }

@@ -11,9 +11,9 @@
         {{ form_label(form.description) }}
         {{ form_widget(form.description,  {attr:{class:'form-control ckeditor', placeholder:"Enter description"}}) }}
     </div>
-    <div class="form-check check-label">
-        {{ form_widget(form.isDraftEntry, {attr:{class:'form-check-input'}}) }}
-        {{ form_label(form.isDraftEntry) }}
+    <div class="form-group">
+        {{ form_label(form.status) }}
+        {{ form_widget(form.status, {attr:{class:'form-control'}}) }}
     </div>
     <button type="submit" class="btn btn-primary">Save</button>
 {{ form_end(form) }}

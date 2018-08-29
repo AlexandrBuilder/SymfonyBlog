@@ -17,8 +17,9 @@ class PostType extends AbstractType
             ->add('title')
             ->add('description')
             ->add('tags')
-            ->add('isDraftEntry',CheckboxType::class, array(
-                'label'=> 'Draft entry',
+            ->add('status', ChoiceType::class, array(
+                'choices'  => Post::getPostStatus(),
+                'label'=> 'Status'
             ));
     }
 

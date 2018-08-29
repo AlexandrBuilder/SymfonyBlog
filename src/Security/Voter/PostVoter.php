@@ -4,6 +4,7 @@ namespace App\Security\Voter;
 
 use App\Entity\Post;
 use App\Entity\User;
+use App\Services\PostService;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
@@ -13,19 +14,22 @@ class PostVoter extends Voter
 {
     const EDIT = 'EDIT';
     const VIEW = 'VIEW';
+    const DELETE = 'VIEW';
 
     private $decisionManager;
+    private $postService;
 
-    public function __construct(AccessDecisionManagerInterface $decisionManager)
+    public function __construct(AccessDecisionManagerInterface $decisionManager, PostService $postService)
     {
         $this->decisionManager = $decisionManager;
+        $this->postService = $postService;
     }
 
     protected function supports($attribute, $subject)
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT, self::VIEW])
+        return in_array($attribute, [self::EDIT, self::VIEW, self::DELETE])
             && $subject instanceof Post;
     }
 
@@ -40,26 +44,31 @@ class PostVoter extends Voter
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::EDIT:
-                return $this->canEdit($subject, $user, $token);
+                return $this->canEdit($subject);
                 break;
             case self::VIEW:
-                return $this->canView($subject, $user, $token);
+                return $this->canView($subject);
+                break;
+            case self::DELETE:
+                return $this->canDelete($subject);
                 break;
         }
 
         return false;
     }
 
-    public function canEdit(Post $post, User $user,TokenInterface $token) {
-
-        if ($this->decisionManager->decide($token, array('ROLE_SUPER_ADMIN'))) {
-            return true;
-        }
-
-        return $post->getUser() == $user;
+    public function canEdit(Post $post)
+    {
+        return $this->postService->canEditPost($post);
     }
 
-    public function canView(Post $post, User $user) {
-        return $post->getUser() == $user;
+    public function canView(Post $post)
+    {
+        return  $this->postService->canViewPost($post);
+    }
+
+    public function canDelete(Post $post)
+    {
+        return  $this->postService->canDeletePost($post);
     }
 }

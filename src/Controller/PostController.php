@@ -27,7 +27,7 @@ class PostController extends Controller
      */
     public function index(PostRepository $postRepository): Response
     {
-        return $this->render('post/index.html.twig', ['posts' => $postRepository->findAll()]);
+        return $this->render('post/index.html.twig', ['posts' => $postRepository->findVerifiedPost()]);
     }
 
     /**
@@ -59,6 +59,8 @@ class PostController extends Controller
      */
     public function show(Post $post): Response
     {
+        $this->denyAccessUnlessGranted(PostVoter::VIEW, $post);
+
         return $this->render('post/show.html.twig', ['post' => $post]);
     }
 
@@ -89,6 +91,8 @@ class PostController extends Controller
      */
     public function delete(Request $request, Post $post): Response
     {
+        $this->denyAccessUnlessGranted(PostVoter::DELETE, $post);
+
         if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($post);

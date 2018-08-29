@@ -25,4 +25,34 @@ class PostService
     {
         return $post->setUser($this->user);
     }
+
+    public function isHostPost(Post $post) {
+        return $this->user == $post->getUser();
+    }
+
+    public function haveUserRoleAdmin() {
+        return in_array("ROLE_ADMIN", $this->user->getRoles());
+    }
+
+    public function canViewPost(Post $post)
+    {
+        if ($post->isVerified()) {
+            return true;
+        }
+        if ($this->isHostPost($post) && $post->isEditMode() || $this->haveUserRoleAdmin()) {
+
+        }
+        return false;
+    }
+
+    public function canEditPost(Post $post) {
+        if ($this->isHostPost($post) && $post->isEditMode() || $this->haveUserRoleAdmin()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function canDeletePost(Post $post) {
+        return $this->isHostPost($post);
+    }
 }
