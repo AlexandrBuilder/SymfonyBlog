@@ -18,11 +18,6 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 class AppCustomAuthenticator extends AbstractGuardAuthenticator
 {
-    /**
-     * Called on every request to decide if this authenticator should be
-     * used for the request. Returning false will cause this authenticator
-     * to be skipped.
-     */
     private $router;
     private $repositoryUser;
 
@@ -34,13 +29,9 @@ class AppCustomAuthenticator extends AbstractGuardAuthenticator
 
     public function supports(Request $request)
     {
-        return $request->getPathInfo() == '/login' && $request->getMethod() == 'POST';
+        return $request->getPathInfo() == $this->router->generate('login') && $request->getMethod() == 'POST';
     }
 
-    /**
-     * Called on every request. Return whatever credentials you want to
-     * be passed to getUser() as $credentials.
-     */
     public function getCredentials(Request $request)
     {
         return [
@@ -51,12 +42,22 @@ class AppCustomAuthenticator extends AbstractGuardAuthenticator
 
     public function getUser($credentials, UserProviderInterface $userProvider)
     {
-        return $this->repositoryUser->findOneByEmail([$credentials['email']]);
+        if(!strlen($credentials['email'])) {
+            throw new AuthenticationException('Email is empty');
+        }
+        if(!strlen($credentials['password'])) {
+            throw new AuthenticationException('Email is empty');
+        }
+        $user = $this->repositoryUser->findOneByEmail([$credentials['email']]);
+        return $user;
     }
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        return password_verify($credentials['password'], $user->getPassword()) && $user->isActive();
+        if(!$user->isActive()) {
+            throw new AuthenticationException('Password not verified');
+        }
+        return password_verify($credentials['password'], $user->getPassword());
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
@@ -75,9 +76,6 @@ class AppCustomAuthenticator extends AbstractGuardAuthenticator
         return new RedirectResponse('/login');
     }
 
-    /**
-     * Called when authentication is needed, but it's not sent
-     */
     public function start(Request $request, AuthenticationException $authException = null)
     {
         return new RedirectResponse('/login');

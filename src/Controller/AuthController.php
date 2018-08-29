@@ -13,6 +13,7 @@ namespace App\Controller;
 use App\Form\UserType;
 use App\Entity\User;
 use App\Services\RegisterEmail;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -67,10 +68,8 @@ class AuthController  extends AbstractController
      */
     public function loginAction(AuthenticationUtils $authenticationUtils)
     {
-        // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
-        // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('auth/login.html.twig', [
@@ -90,57 +89,15 @@ class AuthController  extends AbstractController
      * @Route("/verification/{verificationToken}", name="verification")
      */
     public function verificationAction($verificationToken) {
-        $entityManager = $this
-            ->getDoctrine()
-            ->getManager();
-        $repository = $entityManager->getRepository(User::class);
+        $repository = $this->entityManager->getRepository(User::class);
         $user = $repository->findByVerificationToken($verificationToken);
         if(empty($user)) {
             throw new BadRequestHttpException("User not find");
         }
         $user = $user[0];
-        $user=$user->setVerificationToken('');
-        $entityManager->persist($user);
-        $entityManager->flush();
         return $this->render('auth/success_register.html.twig', [
             'user' => $user
         ]);
     }
 
-    /**
-     * @Route("/send", name="send")
-     */
-    public function send( \Swift_Mailer $mailer)
-    {
-//        $entityManager = $this
-//            ->getDoctrine()
-//            ->getManager();
-//        $repository = $entityManager->getRepository(User::class);
-//        $user = $repository->findByVerificationToken($verificationToken);
-//        $message = (new \Swift_Message('Hello Email'))
-//            ->setFrom('alex.huawei2097@gmail.com')
-//            ->setTo('alex.huawei2097@gmail.com')
-//            ->setBody(
-//                $this->renderView(
-//                    'emails/registration.html.twig',
-//                    array('email' => "ert")
-//                ),
-//                'text/html'
-//            );
-//
-//        if ( $mailer->send($message))
-//        {
-//            return new Response(
-//                '<html><body>Success</body></html>'
-//            );
-//        }
-//        else
-//        {
-//            return new Response(
-//                '<html><body>error</body></html>'
-//            );
-//        }
-
-
-    }
 }

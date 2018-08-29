@@ -1,23 +1,30 @@
 {% extends 'base.html.twig' %}
 {% block body%}
+    <div class="auth">
+        <h2>Sign in to Symfony-Blog</h2>
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
 
-{% if error %}
-    <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-{% endif %}
+        <div class="row">
+            <div class="col-sm-12 col-md-8 col-lg-6">
+                <form action="{{ path('login') }}" method="post">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email" value="{{ last_username }}" placeholder="Enter email">
+                    </div>
 
-<form action="{{ path('login') }}" method="post">
-    <label for="email">Email:</label>
-    <input type="text" id="email" name="email" value="{{ last_username }}" />
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    </div>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" />
-
-    {#
-        If you want to control the URL the user
-        is redirected to on success (more details below)
-        <input type="hidden" name="_target_path" value="/account" />
-    #}
-
-    <button type="submit">login</button>
-</form>
+                    <button type="submit" class="btn btn-primary">Sing in</button>
+                    <a href="{{ path('registration') }}" class="btn btn-secondary" role="button">Create an account</a>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

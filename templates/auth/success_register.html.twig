@@ -1,1 +1,7 @@
-Позьзователь {{ user.email }} успешно зарегистрирован!
+{% extends 'base.html.twig' %}
+{% block body%}
+    <div class="auth">
+        <p>User {{ user.email }} successfully registered</p>
+        <a href="{{ path('login') }}" class="btn btn-secondary" role="button">Go to Sing in</a>
+    </div>
+{% endblock %}
