@@ -59,6 +59,12 @@ class Post
     private $comments;
 
     /**
+     * One Post has Many Assessments.
+     * @ORM\OneToMany(targetEntity="Assessment", mappedBy="post")
+     */
+    private $assessments;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $publicationDate;
@@ -69,6 +75,7 @@ class Post
         $this->status = self::CONST_DRAFT;
         $this->publicationDate = new \DateTime();
         $this->comments = new ArrayCollection();
+        $this->assessments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -210,6 +217,37 @@ class Post
             // set the owning side to null (unless already changed)
             if ($comment->getPost() === $this) {
                 $comment->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Assessment[]
+     */
+    public function getAssessments(): Collection
+    {
+        return $this->assessments;
+    }
+
+    public function addAssessment(Assessment $assessment): self
+    {
+        if (!$this->assessments->contains($assessment)) {
+            $this->assessments[] = $assessment;
+            $assessment->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssessment(Assessment $assessment): self
+    {
+        if ($this->assessments->contains($assessment)) {
+            $this->assessments->removeElement($assessment);
+            // set the owning side to null (unless already changed)
+            if ($assessment->getPost() === $this) {
+                $assessment->setPost(null);
             }
         }
 

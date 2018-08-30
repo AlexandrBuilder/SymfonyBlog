@@ -71,12 +71,19 @@ class User implements UserInterface
      */
     private $comments;
 
+    /**
+     * One User has Many Assessments.
+     * @ORM\OneToMany(targetEntity="Assessment", mappedBy="user")
+     */
+    private $assessments;
+
     public function __construct()
     {
         $this->roles = array('ROLE_USER');
         $this->verificationToken = hash('md5', uniqid());
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->assessments = new ArrayCollection();
     }
 
     public function __toString()
@@ -233,6 +240,37 @@ class User implements UserInterface
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Assessment[]
+     */
+    public function getAssessments(): Collection
+    {
+        return $this->assessments;
+    }
+
+    public function addAssessment(Assessment $assessment): self
+    {
+        if (!$this->assessments->contains($assessment)) {
+            $this->assessments[] = $assessment;
+            $assessment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAssessment(Assessment $assessment): self
+    {
+        if ($this->assessments->contains($assessment)) {
+            $this->assessments->removeElement($assessment);
+            // set the owning side to null (unless already changed)
+            if ($assessment->getUser() === $this) {
+                $assessment->setUser(null);
+            }
+        }
 
         return $this;
     }
