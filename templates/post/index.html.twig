@@ -1,39 +1,76 @@
-{% extends 'base.html.twig' %}
+{% extends 'posts.html.twig' %}
 
 {% block title %}Post index{% endblock %}
 
 {% block body %}
-    <h2>Post index</h2>
+    {#<table class="table">#}
+        {#<thead>#}
+            {#<tr>#}
+                {#<th>Id</th>#}
+                {#<th>Title</th>#}
+                {#<th>Description</th>#}
+                {#<th>actions</th>#}
+            {#</tr>#}
+        {#</thead>#}
+        {#<tbody>#}
+        {#{% for post in posts %}#}
+            {#<tr>#}
+                {#<td>{{ post.id }}</td>#}
+                {#<td>{{ post.title }}</td>#}
+                {#<td>#}
+                    {#{{ (post.description |raw) }}#}
+                {#</td>#}
+                {#<td>#}
+                    {#<a href="{{ path('post_show', {'id': post.id}) }}">show</a>#}
+                    {#<a href="{{ path('post_edit', {'id': post.id}) }}">edit</a>#}
+                {#</td>#}
+            {#</tr>#}
+        {#{% else %}#}
+            {#<tr>#}
+                {#<td colspan="4">no records found</td>#}
+            {#</tr>#}
+        {#{% endfor %}#}
+        {#</tbody>#}
+    {#</table>#}
+    <div class="row">
+        <div class="col-sm-12 col-md-9 col-lg-9">
+            <div class="post-index background-index">
+                {% for post in posts %}
+                    <h2>{{ post.title }}</h2>
+                    <ul class="tags">
+                        {% for tag in post.tags%}
+                            <li>{{ tag }}</li>
+                        {% endfor %}
+                    </ul>
+                    <div class="description">{{ (post.description |raw) }}</div>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-4 col-lg-4">
+                            <div class="author">
+                                <span>Author:</span>
+                                <a href="#">{{ post.user.name }}</a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4 col-lg-3">
+                            <div class="rating">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4 col-lg-3">
+                            <div class="count-comments">
+                                <span>Comments: {{ post.comments|length}}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4 col-lg-2 post-btn">
+                            <a href="{{ path('post_show', {'id': post.id}) }}" class="btn btn-info" role="button" aria-pressed="true">Read more</a>
+                            {#<a href="{{ path('post_show', {'id': post.id}) }}" type="button" class="btn btn-light">Read more</a>#}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for post in posts %}
-            <tr>
-                <td>{{ post.id }}</td>
-                <td>{{ post.title }}</td>
-                <td>
-                    {{ (post.description |raw) }}
-                </td>
-                <td>
-                    <a href="{{ path('post_show', {'id': post.id}) }}">show</a>
-                    <a href="{{ path('post_edit', {'id': post.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
 
+
+    {{ paginator|raw }}
     <a href="{{ path('post_new') }}">Create new</a>
 {% endblock %}

@@ -18,7 +18,8 @@ class PostService
 
     public function __construct(TokenStorageInterface $tokenStorage)
     {
-        $this->user = $tokenStorage->getToken()->getUser();
+        if($tokenStorage->getToken())
+            $this->user = $tokenStorage->getToken()->getUser();
     }
 
     public function addUser(Post $post)

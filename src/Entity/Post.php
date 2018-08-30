@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PostRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Post
 {
@@ -51,10 +52,23 @@ class Post
      */
     private $user;
 
+    /**
+     * One Post has Many Comment.
+     * @ORM\OneToMany(targetEntity="Comment", mappedBy="post")
+     */
+    private $comments;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $publicationDate;
+
     public function __construct()
     {
         $this->tags = new ArrayCollection();
         $this->status = self::CONST_DRAFT;
+        $this->publicationDate = new \DateTime();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -151,11 +165,54 @@ class Post
 
     public function isEditMode()
     {
-        return self::CONST_DRAFT == $this->status || self::CONST_CHECKING == $this->status;
+        return self::CONST_DRAFT == $this->status;
     }
 
     public function isVerified()
     {
-        return self::CONST_VERIFIED == $this->status;
+        return self::CONST_VERIFIED == $this->status || self::CONST_CHECKING == $this->status;
+    }
+
+    public function getPublicationDate(): ?\DateTimeInterface
+    {
+        return $this->publicationDate;
+    }
+
+    public function setPublicationDate(\DateTimeInterface $publicationDate): self
+    {
+        $this->publicationDate = $publicationDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getPost() === $this) {
+                $comment->setPost(null);
+            }
+        }
+
+        return $this;
     }
 }

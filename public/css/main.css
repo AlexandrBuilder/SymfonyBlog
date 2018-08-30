@@ -1,11 +1,81 @@
 .auth {
     margin:30px 10px
 }
-h2{
+h2 {
     font-size: 28px;
     font-weight: bold;
     margin-bottom:20px
 }
 .check-label label{
     margin: 2px 5px 20px;
+}
+.logo {
+    display: block;
+    font-size: 30px;
+    font-weight: bold;
+    margin: 20px 20px 10px;
+}
+.nav-link li{
+    display: inline-block;
+}
+.nav-link li{
+    padding: 0 10px 0 5px;
+    border-right: 2px solid #444;
+}
+.nav-link li:last-child{
+    border-right: none;
+}
+.post-index {
+    margin-bottom: 20px;
+}
+.comments h2,
+.post-index h2{
+    font-size: 26px;
+    font-weight: 100;
+}
+.post-index ul {
+    padding: 0;
+    margin: 0 0 20px;
+}
+.post-index ul li {
+    display: inline-block;
+    padding: 3px 20px;
+    margin-right: 10px;
+    border-radius: 5px;
+    background: #888;
+    color: #fff;
+}
+.author {
+
+}
+.rating {
+
+}
+.count-comments {
+    display: inline-block;
+    padding: 0 20px;
+    border-radius: 20px;
+    background: #888;
+    color: #fff;
+}
+.post-btn {
+    margin-top: -10px;
+}
+.background-index {
+    padding: 15px 10px 15px 30px;
+    background: #eee;
+    border: 3px dashed #666;
+}
+
+.post-show hr {
+    border: 1px solid #999;
+}
+.comment {
+    margin-bottom: 20px;
+    border-radius: 7px;
+    padding: 10px;
+    background: #bbb;
+}
+.autor-comment {
+    font-weight: bold;
 }

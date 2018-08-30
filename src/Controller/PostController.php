@@ -2,32 +2,47 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Post;
+use App\Form\CommentType;
 use App\Form\PostType;
+use App\Helpers\Paginator;
+use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use App\Security\Voter\PostVoter;
+use App\Services\CommentService;
 use App\Services\PostService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
 class PostController extends Controller
 {
     private $postService;
+    private $router;
+    private $commentService;
 
-    public function __construct(PostService $postService)
+    public function __construct(PostService $postService, CommentService $commentService, UrlGeneratorInterface $router)
     {
         $this->postService = $postService;
+        $this->router = $router;
+        $this->commentService = $commentService;
     }
 
     /**
      * @Route("/", name="homepage", methods="GET")
      */
-    public function index(PostRepository $postRepository): Response
+    public function index(Request $request, PostRepository $postRepository): Response
     {
-        return $this->render('post/index.html.twig', ['posts' => $postRepository->findVerifiedPost()]);
+        $page = $request->query->get('page') ? $request->query->get('page') : 1;
+        $paginator = new Paginator($this->router ,$postRepository->findVerifiedPostQuery(), $postRepository->countVerifiedPost()[1], 'homepage', $page);
+        return $this->render('post/index.html.twig', [
+            'posts' => $paginator->getItems(),
+            'paginator' => $paginator->getPaginator()
+        ]);
     }
 
     /**
@@ -40,7 +55,7 @@ class PostController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $post = $this->postService->addUser($post);
+            $this->postService->addUser($post);
             $em = $this->getDoctrine()->getManager();
             $em->persist($post);
             $em->flush();
@@ -55,13 +70,20 @@ class PostController extends Controller
     }
 
     /**
-     * @Route("/post/{id}", name="post_show", methods="GET")
+     * @Route("/post/{id}", name="post_show", methods="GET|POST")
      */
-    public function show(Post $post): Response
+    public function show(Request $request, Post $post, CommentRepository $commentRepository): Response
     {
         $this->denyAccessUnlessGranted(PostVoter::VIEW, $post);
 
-        return $this->render('post/show.html.twig', ['post' => $post]);
+        $commentsForm = $this->addComment($request, $post);
+        if($commentsForm === true)
+            return $this->redirectToRoute('post_show', ['id' => $post->getId()]);
+
+        return $this->render('post/show.html.twig', [
+            'post' => $post,
+            'comments_form' => $commentsForm,
+        ]);
     }
 
     /**
@@ -100,5 +122,31 @@ class PostController extends Controller
         }
 
         return $this->redirectToRoute('homepage');
+    }
+
+    public function addComment(Request $request, Post $post)
+    {
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->commentService ->addUserAndPost($comment, $post);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($comment);
+            $em->flush();
+
+            $this->addFlash(
+                'success',
+                'Comment added successfully'
+            );
+
+            return true;
+        }
+
+        return $this->render('comment/_form.html.twig', [
+            'comment' => $comment,
+            'form' => $form->createView(),
+        ]);
     }
 }

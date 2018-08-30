@@ -19,13 +19,29 @@ class PostRepository extends ServiceEntityRepository
         parent::__construct($registry, Post::class);
     }
 
-    public function findVerifiedPost()
+    public function findVerifiedPostQuery()
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.status = :status')
             ->setParameter('status', Post::CONST_VERIFIED)
+            ->orderBy('p.publicationDate', 'DESC')
+            ->getQuery();
+    }
+
+    public function findAllQuery()
+    {
+        return $this->createQueryBuilder('p')
+            ->getQuery();
+    }
+
+    public function countVerifiedPost()
+    {
+        return $this->createQueryBuilder('p')
+            ->select('count(p.id)')
+            ->andWhere('p.status = :status')
+            ->setParameter('status', Post::CONST_VERIFIED)
             ->getQuery()
-            ->getResult();
+            ->getOneOrNullResult();
     }
 
 //    /**
