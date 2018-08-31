@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Assessment
 {
+    const POSSITIVE_ASSESMENT = "like";
+    const NEGATIVE_ASSESMENT = "dislike";
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -45,9 +47,16 @@ class Assessment
         return $this->assessment;
     }
 
-    public function setAssessment(bool $assessment): self
+    public function setPossitiveAssessment(): self
     {
-        $this->assessment = $assessment;
+        $this->assessment = true;
+
+        return $this;
+    }
+
+    public function setNegativeAssessment(): self
+    {
+        $this->assessment = false;
 
         return $this;
     }
@@ -74,5 +83,13 @@ class Assessment
         $this->user = $user;
 
         return $this;
+    }
+
+    public function equalAssessment(Assessment $assessment) {
+        if ($assessment->getUser() == $this->user && $assessment->getAssessment() == $this->assessment
+            && $assessment->getPost() == $this->post) {
+            return true;
+        }
+        return false;
     }
 }

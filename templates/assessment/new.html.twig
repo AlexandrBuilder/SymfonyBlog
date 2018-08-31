@@ -1,0 +1,84 @@
+{#{% extends 'base.html.twig' %}#}
+{#{% block body %}#}
+    {#<div class="rating" data-post-id="21">#}
+        {#{% if assessment.assessment %}#}
+            {#<i class="fa fa-long-arrow-up active is-disabled" aria-hidden="true"></i>#}
+            {#<div class="rating-value">#}
+                {#{% if rating > 0 %}#}
+                    {#<span class="text-success">+{{ rating }}</span>#}
+                {#{% elseif rating < 0 %}#}
+                    {#<span class="text-danger">{{ rating }}</span>#}
+                {#{% else %}#}
+                    {#<span>{{ rating }}</span>#}
+                {#{% endif %}#}
+            {#</div>#}
+            {#<i class="fa fa-long-arrow-down dislike"aria-hidden="true"></i>#}
+        {#{% else %}#}
+            {#<i class="fa fa-long-arrow-up like" aria-hidden="true"></i>#}
+            {#<div class="rating-value">#}
+                {#{% if rating > 0 %}#}
+                    {#<span class="text-success">+{{ rating }}</span>#}
+                {#{% elseif rating < 0 %}#}
+                    {#<span class="text-danger">{{ rating }}</span>#}
+                {#{% else %}#}
+                    {#<span>{{ rating }}</span>#}
+                {#{% endif %}#}
+            {#</div>#}
+            {#<i class="fa fa-long-arrow-down active is-disabled like" aria-hidden="true"></i>#}
+        {#{% endif %}#}
+    {#</div>#}
+{#{% endblock %}#}
+
+<div class="rating" data-post-id="{{ post.id }}">
+    {% if app.user %}
+        {% if post.isUserEvaluated(app.user) %}
+            {% if post.isUserAsseeement(app.user) %}
+                <i class="fa fa-long-arrow-up active delete" aria-hidden="true"></i>
+                <div class="rating-value">
+                    {% if post.ratingPost > 0 %}
+                        <span class="text-success">+{{ post.ratingPost }}</span>
+                    {% elseif post.ratingPost < 0 %}
+                        <span class="text-danger">{{ post.ratingPost }}</span>
+                    {% else %}
+                        <span>{{ post.ratingPost }}</span>
+                    {% endif %}
+                </div>
+                <i class="fa fa-long-arrow-down dislike" aria-hidden="true"></i>
+            {% else %}
+                <i class="fa fa-long-arrow-up like" aria-hidden="true"></i>
+                <div class="rating-value">
+                    {% if post.ratingPost > 0 %}
+                        <span class="text-success">+{{ post.ratingPost }}</span>
+                    {% elseif post.ratingPost < 0 %}
+                        <span class="text-danger">{{ post.ratingPost }}</span>
+                    {% else %}
+                        <span>{{ post.ratingPost }}</span>
+                    {% endif %}
+                </div>
+                <i class="fa fa-long-arrow-down active delete" aria-hidden="true"></i>
+            {% endif %}
+        {% else %}
+            <i class="fa fa-long-arrow-up like" aria-hidden="true"></i>
+            <div class="rating-value">
+                {% if post.ratingPost > 0 %}
+                    <span class="text-success">+{{ post.ratingPost }}</span>
+                {% elseif post.ratingPost < 0 %}
+                    <span class="text-danger">{{ post.ratingPost }}</span>
+                {% else %}
+                    <span>{{ post.ratingPost }}</span>
+                {% endif %}
+            </div>
+            <i class="fa fa-long-arrow-down dislike" aria-hidden="true"></i>
+        {% endif %}
+    {% else %}
+        <div class="rating-value">
+            {% if post.ratingPost > 0 %}
+                <span class="text-success">+{{ post.ratingPost }}</span>
+            {% elseif post.ratingPost < 0 %}
+                <span class="text-danger">{{ post.ratingPost }}</span>
+            {% else %}
+                <span>{{ post.ratingPost }}</span>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

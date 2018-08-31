@@ -24,12 +24,14 @@ class PostController extends Controller
     private $postService;
     private $router;
     private $commentService;
+    private $paginator;
 
-    public function __construct(PostService $postService, CommentService $commentService, UrlGeneratorInterface $router)
+    public function __construct(PostService $postService, CommentService $commentService, UrlGeneratorInterface $router,Paginator $paginator)
     {
         $this->postService = $postService;
         $this->router = $router;
         $this->commentService = $commentService;
+        $this->paginator = $paginator;
     }
 
     /**
@@ -37,11 +39,11 @@ class PostController extends Controller
      */
     public function index(Request $request, PostRepository $postRepository): Response
     {
-        $page = $request->query->get('page') ? $request->query->get('page') : 1;
-        $paginator = new Paginator($this->router ,$postRepository->findVerifiedPostQuery(), $postRepository->countVerifiedPost()[1], 'homepage', $page);
+        $paginator = $this->paginator->paginate($postRepository->findVerifiedPostQuery(), $postRepository->countVerifiedPost()[1]);
+
         return $this->render('post/index.html.twig', [
-            'posts' => $paginator->getItems(),
-            'paginator' => $paginator->getPaginator()
+            'posts' => $this->paginator->getItems(),
+            'paginator' => $this->paginator->getPaginator()
         ]);
     }
 

@@ -47,11 +47,53 @@
                         <div class="col-sm-6 col-md-4 col-lg-4">
                             <div class="author">
                                 <span>Author:</span>
-                                <a href="#">{{ post.user.name }}</a>
+                                <a href="{{ path('user_show', {'id': post.user.id}) }}">{{ post.user.name }}</a>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md-4 col-lg-3">
-                            <div class="rating">
+                            {#<div class="rating" data-post-id="{{ post.id }}">#}
+                                {#{% if post.isUserEvaluated(app.user) %}#}
+                                    {#{% if post.isUserAsseeement(app.user) %}#}
+                                        {#<i class="fa fa-long-arrow-up active is-disabled" aria-hidden="true"></i>#}
+                                        {#<div class="rating-value">#}
+                                            {#{% if post.ratingPost > 0 %}#}
+                                                {#<span class="text-success">+{{ post.ratingPost }}</span>#}
+                                            {#{% elseif post.ratingPost < 0 %}#}
+                                                {#<span class="text-danger">{{ post.ratingPost }}</span>#}
+                                            {#{% else %}#}
+                                                {#<span>{{ post.ratingPost }}</span>#}
+                                            {#{% endif %}#}
+                                        {#</div>#}
+                                        {#<i class="fa fa-long-arrow-down dislike" aria-hidden="true"></i>#}
+                                    {#{% else %}#}
+                                        {#<i class="fa fa-long-arrow-up like" aria-hidden="true"></i>#}
+                                        {#<div class="rating-value">#}
+                                            {#{% if post.ratingPost > 0 %}#}
+                                                {#<span class="text-success">+{{ post.ratingPost }}</span>#}
+                                            {#{% elseif post.ratingPost < 0 %}#}
+                                                {#<span class="text-danger">{{ post.ratingPost }}</span>#}
+                                            {#{% else %}#}
+                                                {#<span>{{ post.ratingPost }}</span>#}
+                                            {#{% endif %}#}
+                                        {#</div>#}
+                                        {#<i class="fa fa-long-arrow-down active is-disabled" aria-hidden="true"></i>#}
+                                    {#{% endif %}#}
+                                {#{% else %}#}
+                                    {#<i class="fa fa-long-arrow-up like" aria-hidden="true"></i>#}
+                                    {#<div class="rating-value">#}
+                                        {#{% if post.ratingPost > 0 %}#}
+                                            {#<span class="text-success">+{{ post.ratingPost }}</span>#}
+                                        {#{% elseif post.ratingPost < 0 %}#}
+                                            {#<span class="text-danger">{{ post.ratingPost }}</span>#}
+                                        {#{% else %}#}
+                                            {#<span>{{ post.ratingPost }}</span>#}
+                                        {#{% endif %}#}
+                                    {#</div>#}
+                                    {#<i class="fa fa-long-arrow-down dislike" aria-hidden="true"></i>#}
+                                {#{% endif %}#}
+                            {#</div>#}
+                            <div class="rating-box">
+                                {{ include('assessment/new.html.twig') }}
                             </div>
                         </div>
                         <div class="col-sm-6 col-md-4 col-lg-3">

@@ -253,4 +253,36 @@ class Post
 
         return $this;
     }
+
+    public function getRatingPost()
+    {
+        $rating = 0;
+
+        foreach ($this->assessments as $assessment) {
+            if ($assessment->getAssessment() === true) {
+                $rating++;
+            } else {
+                $rating--;
+            }
+        }
+        return $rating;
+    }
+
+    public function getIsUserEvaluated(User $user) {
+
+        foreach ($this->assessments as $assessment) {
+            if($assessment->getUser() == $user)
+                return true;
+        }
+
+        return false;
+    }
+
+    public function getIsUserAsseeement(User $user) {
+
+        foreach ($this->assessments as $assessment) {
+            if($assessment->getUser() == $user)
+                return $assessment->getAssessment();
+        }
+    }
 }

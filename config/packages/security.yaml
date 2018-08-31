@@ -43,5 +43,6 @@ security:
          - { path: ^/post/new, roles: ROLE_USER }
          - { path: ^/post/edit, roles: ROLE_USER }
          - { path: ^/post/delete, roles: ROLE_USER }
+         - { path: ^/assessment, roles: ROLE_USER }
          #- { path: ^/*, roles: ROLE_USER }
          - { path: ^/admin, roles: ROLE_ADMIN }

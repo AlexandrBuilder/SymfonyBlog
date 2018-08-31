@@ -21,3 +21,60 @@ if($(".post-change")) {
         },
     });
 }
+
+ajaxNew = function (postId, assessment, th) {
+    $.ajax({
+        url: '/assessment/new',
+        data: { post_id: postId, assessment: assessment},
+        method : "POST",
+        success: function (data) {
+            $(th).closest(".rating-box").html(data);
+            stopRating();
+            startRating();
+        },
+    });
+};
+
+ajaxDelete = function (postId, th) {
+    $.ajax({
+        url: '/assessment/delete',
+        data: { post_id: postId},
+        method : "POST",
+        success: function (data) {
+            $(th).closest(".rating-box").html(data);
+            refreshRating();
+        },
+    });
+};
+
+startRating = function () {
+    $(".like").click(function () {
+        postId=$(this).closest(".rating").data("postId");
+        assessment='like';
+        ajaxNew(postId, assessment, this);
+    });
+    $(".dislike").click(function () {
+        postId=$(this).closest(".rating").data("postId");
+        assessment='dislike';
+        ajaxNew(postId, assessment, this);
+    });
+    $(".delete").click( function () {
+        postId=$(this).closest(".rating").data("postId");
+        ajaxDelete(postId, this);
+    });
+};
+
+stopRating = function() {
+    $(".like").unbind("click");
+    $(".dislike").unbind("click");
+};
+
+refreshRating = function() {
+    stopRating();
+    startRating();
+};
+
+if($(".rating")) {
+    startRating();
+};
+

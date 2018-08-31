@@ -49,7 +49,7 @@ h2 {
 
 }
 .rating {
-
+ text-align: center;
 }
 .count-comments {
     display: inline-block;
@@ -78,4 +78,35 @@ h2 {
 }
 .autor-comment {
     font-weight: bold;
+}
+i.fa {
+    font-size: 20px;
+    font-weight: bold;
+    color: #888;
+    padding: 5px;
+    cursor: pointer;
+}
+i.active{
+    color: #000;
+}
+.rating-value {
+    font-weight: bold;
+    padding: 3px 5px;
+    display: inline-block;
+    background: #ddd;
+    border-radius: 50%;
+    margin: auto 10px;
+}
+i.is-disabled {
+    cursor: not-allowed;
+}
+.user-information {
+    font-size: 24px;
+    padding: 10px;
+    border: 2px dashed #888;
+    background: #eee;
+    margin-bottom: 30px;
+}
+.user-information b{
+    padding: 2px 10px 2px 0 ;
 }

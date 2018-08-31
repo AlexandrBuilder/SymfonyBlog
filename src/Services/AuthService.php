@@ -19,7 +19,7 @@ class AuthService
     private $repositoryUser;
     private $entityManager;
 
-    public function __construct(UserRepository $repositoryUser,EntityManager $entityManager)
+    public function __construct(UserRepository $repositoryUser, EntityManager $entityManager)
     {
         $this->repositoryUser = $repositoryUser;
         $this->entityManager = $entityManager;

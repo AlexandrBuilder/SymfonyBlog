@@ -274,4 +274,16 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function getRating()
+    {
+        $rating = 0;
+
+        foreach ($this->posts as $post) {
+            $ratingPost = $post->getRatingPost();
+            $rating = ($ratingPost > 0) ? $rating + $ratingPost : $rating - $ratingPost;
+        }
+
+        return $rating;
+    }
 }

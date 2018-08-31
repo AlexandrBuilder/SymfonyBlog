@@ -1,0 +1,50 @@
+{% extends 'posts.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <div class="user-information">
+        <div>
+            <span><b>Email:</b>{{ user.email }}</span>
+        </div>
+        <div>
+            <span><b>Name:</b>{{ user.name }}</span>
+        </div>
+        <div>
+            <b>Rating:</b>
+            {% if user.rating > 0 %}
+                <span class="text-success">
+                    {{ user.rating }}
+                </span>
+            {% elseif user.rating < 0 %}
+                <span class="text-success">
+                    {{ user.rating }}
+                </span>
+            {% else %}
+                <span class="text-success">
+                    {{ user.rating }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+    <h2>Publications:</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Date published</th>
+            <th scope="col">Title</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for post in posts %}
+            <tr>
+                <td>{{post.publicationDate|date("d.m.Y")}}</td>
+                <td>{{post.title}}</td>
+                <td>{{post.status}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {{ paginator|raw }}
+{% endblock %}

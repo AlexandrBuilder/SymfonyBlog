@@ -56,4 +56,5 @@ class PostService
     public function canDeletePost(Post $post) {
         return $this->isHostPost($post);
     }
+
 }
