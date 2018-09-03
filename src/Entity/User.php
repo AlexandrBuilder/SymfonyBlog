@@ -321,6 +321,14 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getArrayUsers()
+    {
+        return [
+            $this->id,
+            $this->email
+        ];
+    }
+
     public static function getUserStatuses()
     {
         return [

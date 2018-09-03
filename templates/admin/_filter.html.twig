@@ -1,6 +1,30 @@
 <div class="filter">
-    <div class="form-group">
-
-    </div>
-    <button class="btn btn-primary">Save</button>
+    <form action="" class="row">
+        <div class="form-group col-sm-6 col-md-3 col-lg-3">
+            <label for="select-input-email" class="col-form-label">Status</label>
+            <select class="form-control multy-select2" id="select-input-email">
+                <option value="" disabled selected hidden>Choose status</option>
+            </select>
+        </div>
+        <div class="form-group col-sm-6 col-md-3 col-lg-3">
+            <label for="select-input-status" class="col-form-label">Status</label>
+            <select class="form-control multy-select2" id="select-input-status">
+                {% for key_user_status, user_status in user_statuses %}
+                    {{ dump(user_status) }}
+                    <option value="{{ key_user_status }}">{{ user_status }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group col-sm-6 col-md-3 col-lg-3">
+            <label for="date-input-from" class="col-form-label">Date from</label>
+            <input class="form-control" type="date" value="2011-08-19" id="date-input-from">
+        </div>
+        <div class="form-group col-sm-6 col-md-3 col-lg-3">
+            <label for="date-input-to" class="col-form-label">Date to</label>
+            <input class="form-control" type="date" value="2011-08-19" id="date-input-to">
+        </div>
+        <div class="form-group col-sm-6 col-md-3 col-lg-3">
+            <input type="submit" class="btn btn-primary" value="Search">
+        </div>
+    </form>
 </div>

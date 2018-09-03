@@ -20,7 +20,7 @@ class UserRepository extends ServiceEntityRepository
     }
 
     public function findByVerificationToken($verificationToken) {
-        return $this->findOneBy('u')
+        return $this->createQueryBuilder('u')
             ->andWhere('u.verificationToken = :verificationToken')
             ->setParameter('verificationToken', $verificationToken)
             ->getQuery()
@@ -35,6 +35,15 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult()
             ;
+    }
+
+    public function findBySubStrEmail($email)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.email LIKE :email')
+            ->setParameter('email', $email.'%')
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

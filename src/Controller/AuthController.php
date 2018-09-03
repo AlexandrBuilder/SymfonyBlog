@@ -13,7 +13,7 @@ namespace App\Controller;
 use App\Form\UserType;
 use App\Entity\User;
 use App\Services\AuthService;
-use App\Services\RegisterEmail;
+use App\Services\emailService;
 use App\Services\UserService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,14 +27,10 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AuthController  extends AbstractController
 {
-    private $registerEmail;
-    private $authService;
     private $userService;
 
-    public function __construct(RegisterEmail $registerEmail, AuthService $authService, UserService $userService)
+    public function __construct(UserService $userService)
     {
-        $this->registerEmail = $registerEmail;
-        $this->authService = $authService;
         $this->userService = $userService;
     }
 
@@ -53,15 +49,6 @@ class AuthController  extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $this->userService->create($user);
-
-//            $password = $passwordEncoder->encodePassword($user, $user->getPlainPassword());
-//            $user->setPassword($password);
-//
-//            $entityManager = $this->getDoctrine()->getManager();
-//            $entityManager->persist($user);
-//            $entityManager->flush();
-//
-//            $this->registerEmail->sendMail($user);
 
             $this->addFlash(
                 'success',
@@ -104,21 +91,10 @@ class AuthController  extends AbstractController
      * @param $verificationToken
      * @return Response
      */
-    public function verificationAction($verificationToken) {
+    public function verificationAction($verificationToken)
+    {
+        $user = $this->userService->activateUser($verificationToken);
 
-        $this->entityManager = $this
-            ->getDoctrine()
-            ->getManager();
-
-        $repository = $this->entityManager->getRepository(User::class);
-        $user = $repository->findByVerificationToken($verificationToken);
-
-        if(empty($user)) {
-            throw new BadRequestHttpException("User not find");
-        }
-
-        $user = $user[0];
-        $this->authService->activateUser($user);
         return $this->render('auth/success_register.html.twig', [
             'user' => $user
         ]);

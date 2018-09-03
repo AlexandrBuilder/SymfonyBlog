@@ -11,8 +11,11 @@ namespace App\Services;
 
 use App\Entity\User;
 
-class RegisterEmail
+class EmailService
 {
+    const CONST_TEXT_HTML = 'text/html';
+    const CONST_TEXT_PLAIN = 'text/plain';
+
     private $mailer;
     private $templating;
     private $adminEmail;
@@ -24,17 +27,17 @@ class RegisterEmail
         $this->adminEmail = $adminEmail;
     }
 
-    public function sendMail(User $user) {
+    public function sendMail(User $user, string $title, array $renderOptions, string $typeRender) {
 
-        $message = (new \Swift_Message('Confirmation letter'))
+        $message = (new \Swift_Message($title))
             ->setFrom($this->adminEmail)
             ->setTo($user->getEmail())
             ->setBody(
                 $this->templating->render(
-                    'emails/registration.html.twig',
-                    ['user' => $user]
+                    $renderOptions['template'],
+                    $renderOptions['options']
                 ),
-                'text/html'
+                $typeRender
             );
 
         $this->mailer ->send($message);

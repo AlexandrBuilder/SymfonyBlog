@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\FilterAdminType;
 use App\Helpers\Paginator;
 use App\Repository\PostRepository;
@@ -12,12 +13,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends AbstractController
 {
-    private $postRepository;
     private $paginator;
 
-    public function __construct(PostRepository $postRepository, Paginator $paginator)
+    public function __construct(Paginator $paginator)
     {
-        $this->postRepository = $postRepository;
         $this->paginator = $paginator;
     }
 
@@ -26,6 +25,7 @@ class AdminController extends AbstractController
      */
     public function index(Request $request, PostRepository $postRepository)
     {
+
 
         $paginator = $this
             ->paginator
@@ -37,6 +37,7 @@ class AdminController extends AbstractController
         return $this->render('admin/show.html.twig', [
             'posts' => $this->paginator->getItems(),
             'paginator' => $this->paginator->getPaginator(),
+            'user_statuses' => User::getUserStatuses()
         ]);
     }
 }

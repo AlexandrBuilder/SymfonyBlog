@@ -5,7 +5,12 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Helpers\Paginator;
 use App\Repository\PostRepository;
+use App\Repository\UserRepository;
+use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -15,12 +20,16 @@ class UserController extends AbstractController
     private $router;
     private $paginator;
     private $postRepository;
+    private $userRepository;
+    private $userService;
 
-    public function __construct(UrlGeneratorInterface $router, Paginator $paginator, PostRepository $postRepository)
+    public function __construct(UrlGeneratorInterface $router, Paginator $paginator, PostRepository $postRepository, UserRepository $userRepository, UserService $userService)
     {
         $this->router = $router;
         $this->paginator = $paginator;
         $this->postRepository = $postRepository;
+        $this->userRepository = $userRepository;
+        $this->userService = $userService;
     }
 
     /**
@@ -67,5 +76,15 @@ class UserController extends AbstractController
             'posts' => $this->paginator->getItems(),
             'paginator' => $this->paginator->getPaginator()
         ]);
+    }
+
+    /**
+     * @Route("/user/json", name="user_json")
+     */
+    public function jsonUser(Request $request): JsonResponse
+    {
+        $emailSubStr = $request->request->get('sub_str') ?? '';
+
+        return new JsonResponse($this->userService->getArrayUsers($emailSubStr));
     }
 }

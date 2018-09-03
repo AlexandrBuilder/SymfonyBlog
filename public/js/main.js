@@ -1,7 +1,6 @@
 if($(".post-change")) {
-    console.log($(".post-change"));
-    $(".multy-select2").select2({
-        maximumSelectionLength: 8,
+    $("#post_tags").select2({
+        maximumSelectionLength: 20,
         placeholder: "Select tags",
         ajax: {
             url:"/tag/json",
@@ -78,3 +77,40 @@ if($(".rating")) {
     startRating();
 };
 
+// if($( "#select-input" ))
+// $( "#select-input" ).change(function() {
+//     alert( "Handler for .change() called." );
+// });
+
+if($(".filter")) {
+    $("#select-input-email").select2({
+        maximumSelectionLength: 20,
+        placeholder: "Select tags",
+        ajax: {
+            url:"/user/json",
+            type: "POST",
+            data: function(params) {
+                return {
+                    sub_str:params.term
+                }
+            },
+            success: function(result){
+                console.log(result);
+                return {
+                    locationVal: result
+                };
+            },
+            processResults:function (data) {
+                return {
+                    results:$.map(data, function (val, i) {
+                        return {id:val[0], text:val[1]};
+                    })
+                }
+            }
+        },
+    });
+}
+
+$("#select-input-status").select2({
+    maximumSelectionLength: 2
+});

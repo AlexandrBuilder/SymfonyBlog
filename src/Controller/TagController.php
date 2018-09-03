@@ -56,9 +56,9 @@ class TagController extends Controller
     }
 
     /**
-     * @Route("/json", name="tag_json", methods="GET")
+     * @Route("/json", name="tag_json")
      */
-    public function jsonTag(TagRepository $tagRepository): JsonResponse
+    public function jsonTag()
     {
         return new JsonResponse($this->tagService->getArrayTags());
     }
@@ -68,6 +68,8 @@ class TagController extends Controller
      */
     public function show(Tag $tag): Response
     {
+        dump($tag);
+        die();
         return $this->render('tag/show.html.twig', ['tag' => $tag]);
     }
 
