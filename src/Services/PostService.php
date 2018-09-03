@@ -10,7 +10,10 @@ namespace App\Services;
 
 
 use App\Entity\Post;
+use App\Repository\PostRepository;
+use DateTime;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class PostService
@@ -19,8 +22,9 @@ class PostService
     private $entityManager;
     private $assessmentService;
     private $commentService;
+    private $postRepository;
 
-    public function __construct(TokenStorageInterface $tokenStorage, EntityManager $entityManager, AssessmentService $assessmentService, CommentService $commentService)
+    public function __construct(TokenStorageInterface $tokenStorage, EntityManager $entityManager, AssessmentService $assessmentService, CommentService $commentService, PostRepository $postRepository)
     {
         $this->entityManager = $entityManager;
         if($tokenStorage->getToken())
@@ -28,6 +32,7 @@ class PostService
 
         $this->assessmentService = $assessmentService;
         $this->commentService = $commentService;
+        $this->postRepository = $postRepository;
     }
 
     public function create(Post $post)
@@ -79,7 +84,7 @@ class PostService
     }
 
     public function canEditPost(Post $post) {
-        if ($this->isHostPost($post) && $post->isEditMode()) {
+        if (($this->isHostPost($post) && $post->isEditMode()) || $this->haveUserRoleAdmin()) {
             return true;
         }
         return false;

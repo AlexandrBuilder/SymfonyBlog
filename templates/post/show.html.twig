@@ -9,22 +9,6 @@
         </div>
     {% endfor %}
     <div class="post-show">
-    {#<table class="table">#}
-        {#<tbody>#}
-            {#<tr>#}
-                {#<th>Id</th>#}
-                {#<td>{{ post.id }}</td>#}
-            {#</tr>#}
-            {#<tr>#}
-                {#<th>Title</th>#}
-                {#<td>{{ post.title }}</td>#}
-            {#</tr>#}
-            {#<tr>#}
-                {#<th>Description</th>#}
-                {#<td>{{ (post.description |raw) }}</td>#}
-            {#</tr>#}
-        {#</tbody>#}
-    {#</table>#}
         <div class="post-index">
             <h2>{{ post.title }}</h2>
             <ul class="tags">
@@ -37,7 +21,7 @@
                 <div class="col-sm-6 col-md-4 col-lg-4">
                     <div class="author">
                         <span>Author:</span>
-                        <a href="#">{{ post.user.name }}</a>
+                        <a href="{{ path('user_show', {'id': post.user.id}) }}">{{ post.user.name }}</a>
                     </div>
                 </div>
                 <div class="col-sm-6 col-md-4 col-lg-3">
@@ -64,10 +48,5 @@
             {% endfor %}
             {{ comments_form.content | raw }}
         </div>
-        <a href="{{ path('homepage') }}">back to list</a>
-
-        <a href="{{ path('post_edit', {'id': post.id}) }}">edit</a>
-
-        {{ include('post/_delete_form.html.twig') }}
     </div>
 {% endblock %}

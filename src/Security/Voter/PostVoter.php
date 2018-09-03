@@ -37,6 +37,9 @@ class PostVoter extends Voter
     {
         $user = $token->getUser();
 
+//        dump($user);
+//        die();
+
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::EDIT:

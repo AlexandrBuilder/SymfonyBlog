@@ -336,4 +336,31 @@ class User implements UserInterface
             self::CONST_BLOCKED => self::CONST_BLOCKED
         ];
     }
+
+    public function setBlockStatusUser(): self
+    {
+        $this->status = self::CONST_BLOCKED;
+        return $this;
+    }
+
+    public function setActiveStatusUser(): self
+    {
+        $this->status = self::CONST_ACTIVE;
+        return $this;
+    }
+
+    public function isBlockedUser()
+    {
+        return  $this->status == self::CONST_BLOCKED;
+    }
+
+    public function isActivateStatusUser()
+    {
+        return $this->status == self::CONST_ACTIVE;
+    }
+
+    public function isAdmin()
+    {
+        return in_array("ROLE_ADMIN", $this->roles) ? true : false;
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Comment;
 use App\Entity\Post;
 use App\Form\CommentType;
+use App\Form\PostAdminType;
 use App\Form\PostType;
 use App\Helpers\Paginator;
 use App\Repository\CommentRepository;

@@ -20,7 +20,7 @@ class CommentController extends Controller
      */
     public function index(CommentRepository $commentRepository): Response
     {
-        return $this->render('comment/show.html.twig', ['comments' => $commentRepository->findAll()]);
+        return $this->render('comment/index.html.twig', ['comments' => $commentRepository->findAll()]);
     }
 
     /**
@@ -51,7 +51,7 @@ class CommentController extends Controller
      */
     public function show(Comment $comment): Response
     {
-        return $this->render('comment/show.html.twig', ['comment' => $comment]);
+        return $this->render('comment/index.html.twig', ['comment' => $comment]);
     }
 
     /**

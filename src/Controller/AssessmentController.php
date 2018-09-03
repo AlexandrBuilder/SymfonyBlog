@@ -30,7 +30,7 @@ class AssessmentController extends AbstractController
      */
     public function index()
     {
-        return $this->render('assessament/show.html.twig', [
+        return $this->render('assessament/index.html.twig', [
             'controller_name' => 'AssesmentController',
         ]);
     }

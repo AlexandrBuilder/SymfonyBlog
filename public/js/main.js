@@ -1,5 +1,5 @@
 if($(".post-change")) {
-    $("#post_tags").select2({
+    $(".post-multy-select2").select2({
         maximumSelectionLength: 20,
         placeholder: "Select tags",
         ajax: {
@@ -85,7 +85,7 @@ if($(".rating")) {
 if($(".filter")) {
     $("#select-input-email").select2({
         maximumSelectionLength: 20,
-        placeholder: "Select tags",
+        placeholder: "Select email",
         ajax: {
             url:"/user/json",
             type: "POST",
@@ -103,7 +103,7 @@ if($(".filter")) {
             processResults:function (data) {
                 return {
                     results:$.map(data, function (val, i) {
-                        return {id:val[0], text:val[1]};
+                        return {id:val[1], text:val[1]};
                     })
                 }
             }

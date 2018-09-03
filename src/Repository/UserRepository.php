@@ -39,12 +39,62 @@ class UserRepository extends ServiceEntityRepository
 
     public function findBySubStrEmail($email)
     {
-        return $this->createQueryBuilder('u')
-            ->where('u.email LIKE :email')
-            ->setParameter('email', $email.'%')
+        $query = $this->createQueryBuilder('u');
+
+        if (strlen($email) != 0) {
+            $query
+                ->andWhere('u.email LIKE :email')
+                ->setParameter('email', $email.'%');
+        }
+
+        return $query
+            ->setMaxResults(20)
             ->getQuery()
-            ->getResult();
+            ->execute();
     }
+
+    public function findAllQuery()
+    {
+        return $this->createQueryBuilder('u')
+            ->getQuery();
+    }
+
+    public function countAll()
+    {
+        return $this->createQueryBuilder('u')
+            ->select('count(u.id)')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    private function getParametrsFilterQuery($query, $options)
+    {
+        if (isset($options['email']) && strlen($options['email']) > 0) {
+            $query
+                ->andWhere('u.email = :email')
+                ->setParameter('email', $options['email']);
+        }
+
+        return $query;
+    }
+
+    public function findByFilterParametrs($options)
+    {
+        $query = $this->createQueryBuilder('u');
+
+        return $this->getParametrsFilterQuery($query, $options)->getQuery();
+    }
+
+    public function countItemsByFilterParametrs($options)
+    {
+        $query = $this->createQueryBuilder('u')
+            ->select('count(u.id)');
+
+        return $this->getParametrsFilterQuery($query, $options)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 
 //    /**
 //     * @return User[] Returns an array of User objects

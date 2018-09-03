@@ -3,7 +3,7 @@
 {% block title %}{% endblock %}
 
 {% block body %}
-    {{ include('admin/_filter.html.twig') }}
+    {{ include('admin/post/_filter.html.twig') }}
     <table class="table table-striped">
         <thead>
         <tr>
@@ -21,14 +21,7 @@
                 <td>{{post.status}}</td>
                 <td>
                     <a class="user-action" href="{{ path('post_show', {'id': post.id}) }}">View</a>
-                    {% if post.isDraftStatus %}
-                        <a class="user-action" href="{{ path('post_edit', {'id': post.id}) }}">Edit</a>
-                        <a class="user-action" href="{{ path('post_published', {'id': post.id}) }}">Published</a>
-                    {% elseif post.isOnModerationStatus %}
-
-                    {% elseif post.isPublishedStatus or post.isOnDeclinedStatus %}
-                        {{ include('post/_delete_form.html.twig') }}
-                    {% endif %}
+                    <a class="user-action" href="{{ path('admin_post_edit', {'id': post.id}) }}">Edit</a>
                 </td>
             </tr>
         {% endfor %}

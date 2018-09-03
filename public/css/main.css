@@ -161,3 +161,13 @@ span.select2-container--default .select2-selection--single .select2-selection__a
     top: 50%;
     width: 0;
 }
+.table-admin-user {
+    margin: 20px 0 10px;
+}
+li.active {
+    background: #bbb;
+}
+.navbar-brand {
+    font-weight: bold;
+    font-size: 25px;
+}

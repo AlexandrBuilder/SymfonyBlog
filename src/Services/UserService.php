@@ -12,6 +12,8 @@ namespace App\Services;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
+use LogicException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -68,11 +70,35 @@ class UserService
     public function getArrayUsers($emailSubStr)
     {
         $users = $this->userRepository->findBySubStrEmail($emailSubStr);
+
         $usersArray = [];
+
         foreach ($users as $user){
             $usersArray[] = $user->getArrayUsers();
         }
+
         return $usersArray;
+    }
+
+    public function setBlockStatusUser(User $user)
+    {
+        if ($user->isAdmin()){
+            throw new LogicException('Admin can not be blocked');
+        }
+        if ($user->isBlockedUser()){
+            throw new LogicException('User blocked already');
+        }
+        $user->setBlockStatusUser();
+        $this->entityManager->flush($user);
+    }
+
+    public function setActiveStatusUser(User $user)
+    {
+        if ($user->isActive()){
+            throw new LogicException('User activate already');
+        }
+        $user->setActiveStatusUser();
+        $this->entityManager->flush($user);
     }
 
 }

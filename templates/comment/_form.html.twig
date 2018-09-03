@@ -3,5 +3,6 @@
         {{ form_label(form.comments) }}
         {{ form_widget(form.comments, {attr:{class:'form-control', placeholder:"Enter comments"}}) }}
     </div>
-    <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    <button class="btn btn-primary">{{ button_label|default('Add comment') }}</button>
+    <a href="{{ path('homepage') }}" class="btn btn-secondary" role="button">Back to list</a>
 {{ form_end(form) }}

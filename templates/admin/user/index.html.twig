@@ -1,0 +1,56 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <form action="{{ path('admin_user') }}" class="table-admin-user row justify-content-end" method="GET">
+        <div class="col-sm-9 col-md-3 col-lg-3">
+            <select class="form-control multy-select2" name="email" id="select-input-email">
+                {% if old_fields.email|length > 0 %}
+                    <option value="{{ old_fields.email }}" selected>{{ old_fields.email }}</option>
+                {% else %}
+                    <option value="" disabled selected hidden>Choose status</option>
+                {% endif %}
+            </select>
+        </div>
+        <div class="form-group col-sm-3 col-md-1 col-lg-1">
+            <input type="submit" class="btn btn-primary" value="Search">
+        </div>
+    </form>
+    {% for message in app.flashes('success_user') %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Title</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <th>{{user.id}}</th>
+                <td>{{user.email}}</td>
+                <td>{{user.status}}</td>
+                <td>
+                    {% if not user.isAdmin %}
+                        {% if user.isBlockedUser %}
+                            <a class="user-action" href="{{ path('admin_user_activate', {'id': user.id}) }}">Activate</a>
+                        {% elseif user.isActivateStatusUser %}
+                            <a class="user-action" href="{{ path('admin_user_block', {'id': user.id}) }}">Block</a>
+                        {% endif %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {{ paginator|raw }}
+{% endblock %}

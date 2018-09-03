@@ -29,7 +29,7 @@ class TagController extends Controller
      */
     public function index(TagRepository $tagRepository): Response
     {
-        return $this->render('tag/show.html.twig', ['tags' => $tagRepository->findAll()]);
+        return $this->render('tag/index.html.twig', ['tags' => $tagRepository->findAll()]);
     }
 
     /**
@@ -70,7 +70,7 @@ class TagController extends Controller
     {
         dump($tag);
         die();
-        return $this->render('tag/show.html.twig', ['tag' => $tag]);
+        return $this->render('tag/index.html.twig', ['tag' => $tag]);
     }
 
     /**

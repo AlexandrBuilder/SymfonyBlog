@@ -1,0 +1,18 @@
+{% extends 'admin.html.twig' %}
+
+{% block title %}Edit Post{% endblock %}
+
+{% block body %}
+    <h2>Edit Post</h2>
+
+    {% for message in app.flashes('success_post') %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {{ include('admin/post/_form.html.twig') }}
+
+    {#<a href="{{ path('homepage') }}">back to list</a>#}
+
+{% endblock %}
