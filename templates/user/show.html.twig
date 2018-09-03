@@ -17,11 +17,11 @@
                     {{ user.rating }}
                 </span>
             {% elseif user.rating < 0 %}
-                <span class="text-success">
+                <span class="text-danger">
                     {{ user.rating }}
                 </span>
             {% else %}
-                <span class="text-success">
+                <span>
                     {{ user.rating }}
                 </span>
             {% endif %}
@@ -34,6 +34,7 @@
             <th scope="col">Date published</th>
             <th scope="col">Title</th>
             <th scope="col">Status</th>
+            <th scope="col">Action</th>
         </tr>
         </thead>
         <tbody>
@@ -42,6 +43,7 @@
                 <td>{{post.publicationDate|date("d.m.Y")}}</td>
                 <td>{{post.title}}</td>
                 <td>{{post.status}}</td>
+                <td><a href="{{ path('post_show', {'id': post.id}) }}">View</a></td>
             </tr>
         {% endfor %}
         </tbody>

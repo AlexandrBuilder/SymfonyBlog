@@ -31,8 +31,20 @@ class AssessmentService
         $this->entityManager = $entityManager;
     }
 
-    public function create(string $assessmentValue, Post $post)
+    public function canEditAssessment(Post $post)
     {
+        if (isset($this->user)) {
+            return $this->user == $post->getUser();
+        }
+        return false;
+    }
+
+    public function createForUser(string $assessmentValue, Post $post)
+    {
+        if ($this->canEditAssessment($post)) {
+            throw new LogicException('You can not put yourself assessments');
+        }
+
         $assessment = new Assessment();
         $assessment->setUser($this->user)
             ->setPost($post);
@@ -51,7 +63,7 @@ class AssessmentService
             if ($assessment->equalAssessment($oldAssessment)) {
                 throw new LogicException('Assessment already exist');
             } else {
-                $this->delete($post);
+                $this->deleteForUser($post);
             }
         }
 
@@ -60,7 +72,8 @@ class AssessmentService
         return $assessment;
     }
 
-    public function delete(Post $post) {
+    public function deleteForUser(Post $post)
+    {
         if (!$this->assessmentRepository->findByUserAndPost($post, $this->user))
         {
             throw new LogicException('Assessment not exist');
@@ -70,4 +83,11 @@ class AssessmentService
         $this->entityManager->flush();
         return $assessment;
     }
+
+    public function delete(Assessment $assessment)
+    {
+        $this->entityManager->remove($assessment);
+        $this->entityManager->flush();
+    }
+
 }

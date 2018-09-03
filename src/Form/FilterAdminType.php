@@ -2,34 +2,35 @@
 
 namespace App\Form;
 
-use App\Entity\Post;
+use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class PostType extends AbstractType
+class FilterAdminType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class, [
-                'required' => false
-            ])
-            ->add('description')
-            ->add('tags')
+            ->add('email')
             ->add('status', ChoiceType::class, [
-                'choices'  => Post::getPostStatus(),
-                'label'=> 'Status'
-            ]);
+                'choices'  => User::getUserStatuses()
+            ])
+            ->add('from', DateType::class, [
+                'widget' => 'choice'
+            ])
+            ->add('to', DateType::class, [
+                'widget' => 'choice'
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Post::class,
+            // Configure your form options here
         ]);
     }
 }

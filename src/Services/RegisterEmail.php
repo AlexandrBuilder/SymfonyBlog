@@ -24,64 +24,15 @@ class RegisterEmail
         $this->adminEmail = $adminEmail;
     }
 
-    /**
-     * @return \Swift_Mailer
-     */
-    public function getMailer(): \Swift_Mailer
-    {
-        return $this->mailer;
-    }
-
-    /**
-     * @param \Swift_Mailer $mailer
-     */
-    public function setMailer(\Swift_Mailer $mailer): void
-    {
-        $this->mailer = $mailer;
-    }
-
-    /**
-     * @return \Twig_Environment
-     */
-    public function getTemplating(): \Twig_Environment
-    {
-        return $this->templating;
-    }
-
-    /**
-     * @param \Twig_Environment $templating
-     */
-    public function setTemplating(\Twig_Environment $templating): void
-    {
-        $this->templating = $templating;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAdminEmail()
-    {
-        return $this->adminEmail;
-    }
-
-    /**
-     * @param mixed $adminEmail
-     */
-    public function setAdminEmail($adminEmail): void
-    {
-        $this->adminEmail = $adminEmail;
-    }
-
-
     public function sendMail(User $user) {
 
-        $message = (new \Swift_Message('Hello Email'))
+        $message = (new \Swift_Message('Confirmation letter'))
             ->setFrom($this->adminEmail)
             ->setTo($user->getEmail())
             ->setBody(
                 $this->templating->render(
                     'emails/registration.html.twig',
-                    array('user' => $user)
+                    ['user' => $user]
                 ),
                 'text/html'
             );

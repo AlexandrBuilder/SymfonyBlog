@@ -1,13 +1,15 @@
 {% extends 'base.html.twig' %}
 {% block header %}
-    <span class="logo">SymfonyBlog</span>
-    <ul class="nav-link">
-        <li><a href="{{ path('homepage') }}">Home</a></li>
-        {% if app.user %}
-            <li><a href="{{ path('user_me') }}">Personal account</a></li>
-            <li><a href="{{ path('logout') }}">Logout</a></li>
-        {% else %}
-            <li><a href="{{ path('login') }}">SingIn</a></li>
-        {% endif %}
-    </ul>
+    <div class="container">
+        <span class="logo">SymfonyBlog</span>
+        <ul class="nav-link">
+            <li><a href="{{ path('homepage') }}">Home</a></li>
+            {% if app.user %}
+                <li><a href="{{ path('user_me') }}">Personal account</a></li>
+                <li><a href="{{ path('logout') }}">Logout</a></li>
+            {% else %}
+                <li><a href="{{ path('login') }}">SingIn</a></li>
+            {% endif %}
+        </ul>
+    </div>
 {% endblock %}

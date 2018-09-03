@@ -1,4 +1,11 @@
 {{ form_start(form) }}
+    {% if (form_errors(form.title)|length > 0) or (form_errors(form.tags)|title > 0) or (form_errors(form.description)|length > 0) %}
+        <div class="alert alert-danger" role="alert">
+            {{ form_errors(form.title) }}
+            {{ form_errors(form.tags) }}
+            {{ form_errors(form.description) }}
+        </div>
+    {% endif %}
     <div class="form-group">
         {{ form_label(form.title) }}
         {{ form_widget(form.title, {attr:{class:'form-control', placeholder:"Enter title"}}) }}

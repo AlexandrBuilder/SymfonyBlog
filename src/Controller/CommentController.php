@@ -20,7 +20,7 @@ class CommentController extends Controller
      */
     public function index(CommentRepository $commentRepository): Response
     {
-        return $this->render('comment/index.html.twig', ['comments' => $commentRepository->findAll()]);
+        return $this->render('comment/show.html.twig', ['comments' => $commentRepository->findAll()]);
     }
 
     /**

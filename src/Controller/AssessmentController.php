@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\PostRepository;
+use App\Security\Voter\AssessmentVoter;
 use App\Services\AssessmentService;
 use App\Services\PostService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +30,7 @@ class AssessmentController extends AbstractController
      */
     public function index()
     {
-        return $this->render('assessament/index.html.twig', [
+        return $this->render('assessament/show.html.twig', [
             'controller_name' => 'AssesmentController',
         ]);
     }
@@ -44,6 +45,7 @@ class AssessmentController extends AbstractController
     {
         $post = $postRepository->find($request->request->get('post_id'));
         $assessment = $request->request->get('assessment');
+
         if(!$post) {
             throw new BadRequestHttpException('This post not exist');
         }
@@ -51,8 +53,10 @@ class AssessmentController extends AbstractController
             throw new BadRequestHttpException('Assessment post not exist');
         }
 
+        $assessment = $this->assessmentService->createForUser($assessment, $post);
+
         return $this->render('assessment/new.html.twig', [
-            'assessment' => $this->assessmentService->create($assessment, $post),
+            'assessment' => $assessment,
             'rating' => $post->getRatingPost(),
             'post' => $post
         ]);
@@ -71,8 +75,9 @@ class AssessmentController extends AbstractController
             throw new BadRequestHttpException('This post not exist');
         }
 
+        $this->assessmentService->deleteForUser($post);
+
         return $this->render('assessment/delete.html.twig', [
-            'assessment' => $this->assessmentService->delete($post),
             'rating' => $post->getRatingPost(),
             'post' => $post
         ]);

@@ -145,7 +145,11 @@ class Paginator
 
     public function getPaginator()
     {
-        return $this->paginator;
+        if ($this->maxItems < $this->maxPages) {
+            return $this->paginator;
+        } else {
+            return '';
+        }
     }
 
     public function getPageUrl($numPage) {

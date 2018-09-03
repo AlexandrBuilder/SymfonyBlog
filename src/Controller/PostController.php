@@ -9,6 +9,7 @@ use App\Form\PostType;
 use App\Helpers\Paginator;
 use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
+use App\Security\Voter\CommentVoter;
 use App\Security\Voter\PostVoter;
 use App\Services\CommentService;
 use App\Services\PostService;
@@ -39,7 +40,12 @@ class PostController extends Controller
      */
     public function index(Request $request, PostRepository $postRepository): Response
     {
-        $paginator = $this->paginator->paginate($postRepository->findVerifiedPostQuery(), $postRepository->countVerifiedPost()[1]);
+        $paginator = $this
+            ->paginator
+            ->paginate(
+                $postRepository->findVerifiedPostQuery(),
+                $postRepository->countVerifiedPost()[1]
+            );
 
         return $this->render('post/index.html.twig', [
             'posts' => $this->paginator->getItems(),
@@ -57,12 +63,15 @@ class PostController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->postService->addUser($post);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($post);
-            $em->flush();
 
-            return $this->redirectToRoute('homepage');
+            $this->postService->create($post);
+
+            $this->addFlash(
+                'success_post',
+                'Post added successfully'
+            );
+
+            return $this->redirectToRoute('post_show', ['id' => $post->getId()]);
         }
 
         return $this->render('post/new.html.twig', [
@@ -99,7 +108,15 @@ class PostController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+
+            $this->getDoctrine()
+                ->getManager()
+                ->flush();
+
+            $this->addFlash(
+                'success_post',
+                'Post edited successfully'
+            );
 
             return $this->redirectToRoute('post_edit', ['id' => $post->getId()]);
         }
@@ -118,12 +135,15 @@ class PostController extends Controller
         $this->denyAccessUnlessGranted(PostVoter::DELETE, $post);
 
         if ($this->isCsrfTokenValid('delete'.$post->getId(), $request->request->get('_token'))) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($post);
-            $em->flush();
+            $this->postService->delete($post);
         }
 
-        return $this->redirectToRoute('homepage');
+        $this->addFlash(
+            'success_post',
+            'You deleted your article "'.$post->getTitle().'"'
+        );
+
+        return $this->redirectToRoute('user_me');
     }
 
     public function addComment(Request $request, Post $post)
@@ -133,13 +153,12 @@ class PostController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->commentService ->addUserAndPost($comment, $post);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($comment);
-            $em->flush();
+
+            $this->denyAccessUnlessGranted(CommentVoter::EDIT, $comment);
+            $this->commentService->create($comment, $post);
 
             $this->addFlash(
-                'success',
+                'success_comment',
                 'Comment added successfully'
             );
 
@@ -150,5 +169,20 @@ class PostController extends Controller
             'comment' => $comment,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @Route("/published/{id}", name="post_published")
+     */
+    public function publishedAction(Request $request, Post $post)
+    {
+        $this->postService->published($post);
+
+        $this->addFlash(
+            'success_post',
+            'You published your article "'.$post->getTitle().'"'
+        );
+
+        return $this->redirect($request->server->get('HTTP_REFERER'));
     }
 }

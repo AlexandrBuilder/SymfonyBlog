@@ -6,17 +6,11 @@ use App\Entity\Tag;
 use App\Form\TagType;
 use App\Repository\TagRepository;
 use App\Services\TagService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * @Route("/tag")
@@ -35,7 +29,7 @@ class TagController extends Controller
      */
     public function index(TagRepository $tagRepository): Response
     {
-        return $this->render('tag/index.html.twig', ['tags' => $tagRepository->findAll()]);
+        return $this->render('tag/show.html.twig', ['tags' => $tagRepository->findAll()]);
     }
 
     /**

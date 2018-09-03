@@ -15,6 +15,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
+    const CONST_ACTIVE = "Active";
+    const CONST_BLOCKED = "Blocked";
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -31,17 +34,29 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=150)
+     * @Assert\NotBlank(message = "Name must be filled")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 150,
+     *      minMessage = "Field 'Name' is not filled must contain more than {{ limit }} characters",
+     *      maxMessage = "The 'Name' must not exceed {{ limit }} characters in length"
+     * )
      */
     private $name;
 
     /**
-     * @Assert\NotBlank()
      * @Assert\Length(max=4096)
+     * @Assert\NotBlank(message = "Password must be filled")
+     * @Assert\Length(
+     *      min = 8,
+     *      max = 4096,
+     *      minMessage = "Field 'Password' is not filled must contain more than {{ limit }} characters",
+     *      maxMessage = "The 'Password' must not exceed {{ limit }} characters in length"
+     * )
      */
     private $plainPassword;
 
     /**
-     *
      * @ORM\Column(type="string", length=128)
      */
     private $verificationToken;
@@ -77,9 +92,16 @@ class User implements UserInterface
      */
     private $assessments;
 
+    /**
+     * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=100)
+     */
+    private $status;
+
     public function __construct()
     {
         $this->roles = array('ROLE_USER');
+        $this->status = self::CONST_ACTIVE;
         $this->verificationToken = hash('md5', uniqid());
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
@@ -281,9 +303,29 @@ class User implements UserInterface
 
         foreach ($this->posts as $post) {
             $ratingPost = $post->getRatingPost();
-            $rating = ($ratingPost > 0) ? $rating + $ratingPost : $rating - $ratingPost;
+            $rating = $rating + $ratingPost;
         }
 
         return $rating;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public static function getUserStatuses()
+    {
+        return [
+            self::CONST_ACTIVE => self::CONST_ACTIVE,
+            self::CONST_BLOCKED => self::CONST_BLOCKED
+        ];
     }
 }

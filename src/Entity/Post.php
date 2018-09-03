@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PostRepository")
@@ -13,8 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
 class Post
 {
     const CONST_DRAFT = 'Draft';
-    const CONST_CHECKING = 'Checking';
-    const CONST_VERIFIED = 'Verified';
+    const CONST_ON_MODERATION = 'On moderation';
+    const CONST_DECLINED= 'Declined';
+    const CONST_PUBLISHED = 'Published';
 
     /**
      * @ORM\Id()
@@ -25,6 +27,13 @@ class Post
 
     /**
      * @ORM\Column(type="string", length=400)
+     * @Assert\NotBlank(message = "Title must be filled")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 400,
+     *      minMessage = "Field 'Title' is not filled must contain more than {{ limit }} characters",
+     *      maxMessage = "The 'Title' must not exceed {{ limit }} characters in length"
+     * )
      */
     private $title;
 
@@ -37,6 +46,13 @@ class Post
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(message = "Description must be filled")
+     * @Assert\Length(
+     *      min = 20,
+     *      max = 2000,
+     *      minMessage = "Field 'Description' is not filled must contain more than {{ limit }} characters",
+     *      maxMessage = "The 'Description' must not exceed {{ limit }} characters in length"
+     * )
      */
     private $description;
 
@@ -165,8 +181,9 @@ class Post
     {
         return [
             self::CONST_DRAFT => Post::CONST_DRAFT,
-            self::CONST_CHECKING => Post::CONST_CHECKING,
-            self::CONST_VERIFIED => Post::CONST_VERIFIED
+            self::CONST_ON_MODERATION => Post::CONST_ON_MODERATION,
+            self::CONST_PUBLISHED => Post::CONST_PUBLISHED,
+            self::CONST_DECLINED => Post::CONST_DECLINED
         ];
     }
 
@@ -177,7 +194,43 @@ class Post
 
     public function isVerified()
     {
-        return self::CONST_VERIFIED == $this->status || self::CONST_CHECKING == $this->status;
+        return self::CONST_ON_MODERATION == $this->status || self::CONST_PUBLISHED == $this->status;
+    }
+
+    public function moderated(): self
+    {
+        $this->status = self::CONST_ON_MODERATION;
+
+        return $this;
+    }
+
+    public function published(): self
+    {
+        $this->publicationDate = new \DateTime();
+
+        $this->status = self::CONST_ON_MODERATION;
+
+        return $this;
+    }
+
+    public function isDraftStatus()
+    {
+        return $this->status == self::CONST_DRAFT ? true : false;
+    }
+
+    public function isOnModerationStatus()
+    {
+        return $this->status == self::CONST_ON_MODERATION ? true : false;
+    }
+
+    public function isPublishedStatus()
+    {
+        return $this->status == self::CONST_DECLINED ? true : false;
+    }
+
+    public function isOnDeclinedStatus()
+    {
+        return $this->status == self::CONST_PUBLISHED ? true : false;
     }
 
     public function getPublicationDate(): ?\DateTimeInterface

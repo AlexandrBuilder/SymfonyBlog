@@ -39,7 +39,17 @@ services:
         arguments:
             $entityManager: "@doctrine.orm.entity_manager"
 
-            
+    App\Services\CommentService:
+        arguments:
+            $entityManager: "@doctrine.orm.entity_manager"
+
+    App\Services\PostService:
+        arguments:
+            $entityManager: "@doctrine.orm.entity_manager"
+
+    App\Services\UserService:
+        arguments:
+             $entityManager: "@doctrine.orm.entity_manager"
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

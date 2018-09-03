@@ -1,0 +1,67 @@
+{% extends 'posts.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <div class="user-information">
+        <div>
+            <span><b>My email:</b>{{ app.user.email }}</span>
+        </div>
+        <div>
+            <span><b>My name:</b>{{ app.user.name }}</span>
+        </div>
+        <div>
+            <b>Rating:</b>
+            {% if app.user.rating > 0 %}
+                <span class="text-success">
+                    {{ app.user.rating }}
+                </span>
+            {% elseif app.user.rating < 0 %}
+                <span class="text-danger">
+                    {{ app.user.rating }}
+                </span>
+            {% else %}
+                <span>
+                    {{ app.user.rating }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+    <h2>Publications:</h2>
+    {% for message in app.flashes('success_post') %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Date published</th>
+            <th scope="col">Title</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for post in posts %}
+            <tr>
+                <td>{{post.publicationDate|date("d.m.Y")}}</td>
+                <td>{{post.title}}</td>
+                <td>{{post.status}}</td>
+                <td>
+                    <a class="user-action" href="{{ path('post_show', {'id': post.id}) }}">View</a>
+                    {% if post.isDraftStatus %}
+                        <a class="user-action" href="{{ path('post_edit', {'id': post.id}) }}">Edit</a>
+                        <a class="user-action" href="{{ path('post_published', {'id': post.id}) }}">Published</a>
+                    {% elseif post.isOnModerationStatus %}
+
+                    {% elseif post.isPublishedStatus or post.isOnDeclinedStatus %}
+                        {{ include('post/_delete_form.html.twig') }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {{ paginator|raw }}
+{% endblock %}
