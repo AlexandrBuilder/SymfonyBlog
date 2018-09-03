@@ -9,7 +9,11 @@
 namespace App\Services;
 
 
+use Symfony\Component\HttpFoundation\Request;
+
 class FilterAdminService
 {
-    
+    public function filter(Request $request) {
+        
+    }
 }
