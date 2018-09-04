@@ -77,11 +77,6 @@ if($(".rating")) {
     startRating();
 };
 
-// if($( "#select-input" ))
-// $( "#select-input" ).change(function() {
-//     alert( "Handler for .change() called." );
-// });
-
 if($(".filter")) {
     $("#select-input-email").select2({
         maximumSelectionLength: 20,

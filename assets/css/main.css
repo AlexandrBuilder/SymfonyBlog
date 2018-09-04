@@ -1,0 +1,176 @@
+.auth {
+    margin:30px 10px
+}
+h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom:20px
+}
+.check-label label{
+    margin: 2px 5px 20px;
+}
+.logo {
+    display: block;
+    font-size: 30px;
+    font-weight: bold;
+    margin: 20px 20px 10px;
+}
+.nav-link li{
+    display: inline-block;
+}
+.nav-link li{
+    padding: 0 10px 0 5px;
+    border-right: 2px solid #444;
+}
+.nav-link li:last-child{
+    border-right: none;
+}
+.post-index {
+    margin-bottom: 20px;
+}
+.comments h2,
+.post-index h2{
+    font-size: 26px;
+    font-weight: 100;
+}
+.post-index ul {
+    padding: 0;
+    margin: 0 0 20px;
+}
+.post-index ul li {
+    display: inline-block;
+    padding: 3px 20px;
+    margin-right: 10px;
+    border-radius: 5px;
+    background: #888;
+    color: #fff;
+}
+.author {
+
+}
+.rating {
+ text-align: center;
+}
+.count-comments {
+    display: inline-block;
+    padding: 0 20px;
+    border-radius: 20px;
+    background: #888;
+    color: #fff;
+}
+.post-btn {
+    margin-top: -10px;
+}
+.background-index {
+    padding: 15px 10px 15px 30px;
+    background: #eee;
+    border: 3px dashed #666;
+}
+
+.post-show hr {
+    border: 1px solid #999;
+}
+.comment {
+    margin-bottom: 20px;
+    border-radius: 7px;
+    padding: 10px;
+    background: #bbb;
+}
+.autor-comment {
+    font-weight: bold;
+}
+i.fa {
+    font-size: 20px;
+    font-weight: bold;
+    color: #888;
+    padding: 5px;
+    cursor: pointer;
+}
+i.active{
+    color: #000;
+}
+.rating-value {
+    font-weight: bold;
+    padding: 3px 5px;
+    display: inline-block;
+    background: #ddd;
+    border-radius: 50%;
+    margin: auto 10px;
+}
+i.is-disabled {
+    cursor: not-allowed;
+}
+.user-information {
+    font-size: 24px;
+    padding: 10px;
+    border: 2px dashed #888;
+    background: #eee;
+    margin-bottom: 30px;
+}
+.user-information b{
+    padding: 2px 10px 2px 0 ;
+}
+.delete-form {
+    display: inline-block;
+}
+.delete-btn {
+    margin: 0;
+    padding: 0;
+    background: none;
+    color: #007bff
+}
+.delete-btn:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+.user-action {
+    display: inline-block;
+    margin-right: 10px;
+}
+.alert ul {
+    list-style: none;
+}
+.alert ul,
+.alert li {
+    margin: 0;
+    padding: 0;
+}
+.table th,
+.table td {
+    border: 1px solid #dee2e6;
+}
+.filter {
+    margin: 20px 0;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+}
+span.select2-container .select2-selection--single {
+    padding-top: 4px;
+    height: 37px;
+}
+span.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: #888 transparent transparent transparent;
+    border-style: solid;
+    border-width: 5px 4px 0 4px;
+    height: 0;
+    left: 50%;
+    margin-left: -4px;
+    margin-top: 3px;
+    position: absolute;
+    top: 50%;
+    width: 0;
+}
+.table-admin-user {
+    margin: 20px 0 10px;
+}
+li.active {
+    background: #bbb;
+}
+.navbar-brand {
+    font-weight: bold;
+    font-size: 25px;
+}
+.description {
+    margin-bottom: 20px;
+}
