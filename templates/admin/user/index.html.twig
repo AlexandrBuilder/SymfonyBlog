@@ -38,7 +38,7 @@
                 <td>{{user.email}}</td>
                 <td>{{user.status}}</td>
                 <td>
-                    {% if not user.isAdmin %}
+                    {% if not user.isAdmin and not user.isNotVerifiedUser %}
                         {% if user.isBlockedUser %}
                             <a class="user-action" href="{{ path('admin_user_activate', {'id': user.id}) }}">Activate</a>
                         {% elseif user.isActivateStatusUser %}

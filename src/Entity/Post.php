@@ -197,6 +197,13 @@ class Post
         return self::CONST_ON_MODERATION == $this->status || self::CONST_PUBLISHED == $this->status;
     }
 
+    public function declined(): self
+    {
+        $this->status = self::CONST_DECLINED;
+
+        return $this;
+    }
+
     public function moderated(): self
     {
         $this->status = self::CONST_ON_MODERATION;
@@ -208,7 +215,7 @@ class Post
     {
         $this->publicationDate = new \DateTime();
 
-        $this->status = self::CONST_ON_MODERATION;
+        $this->status = self::CONST_PUBLISHED;
 
         return $this;
     }

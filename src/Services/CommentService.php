@@ -46,4 +46,9 @@ class CommentService
         return $comment;
     }
 
+    public function canEditComment()
+    {
+        return !$this->user->isBlocked();
+    }
+
 }

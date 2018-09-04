@@ -77,21 +77,21 @@ class PostService
         if ($post->isVerified()) {
             return true;
         }
-        if ($this->isHostPost($post) || $this->haveUserRoleAdmin()) {
+        if ($this->isHostPost($post) && !($this->user->isBlocked()) || $this->haveUserRoleAdmin()) {
             return true;
         }
         return false;
     }
 
     public function canEditPost(Post $post) {
-        if (($this->isHostPost($post) && $post->isEditMode()) || $this->haveUserRoleAdmin()) {
+        if (($this->isHostPost($post) && $post->isEditMode() && !($this->user->isBlocked())) || $this->haveUserRoleAdmin()) {
             return true;
         }
         return false;
     }
 
     public function canDeletePost(Post $post) {
-        return $this->isHostPost($post);
+        return $this->isHostPost($post) && !($this->user->isBlocked());
     }
 
 }

@@ -27,8 +27,6 @@ class PostVoter extends Voter
 
     protected function supports($attribute, $subject)
     {
-        // replace with your own logic
-        // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, [self::EDIT, self::VIEW, self::DELETE])
             && $subject instanceof Post;
     }
@@ -37,10 +35,6 @@ class PostVoter extends Voter
     {
         $user = $token->getUser();
 
-//        dump($user);
-//        die();
-
-        // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::EDIT:
                 return $this->canEdit($subject);

@@ -17,6 +17,7 @@ class User implements UserInterface
 {
     const CONST_ACTIVE = "Active";
     const CONST_BLOCKED = "Blocked";
+    const CONST_NOT_VERIFIED = "Not verified";
 
     /**
      * @ORM\Id
@@ -100,8 +101,8 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->roles = array('ROLE_USER');
-        $this->status = self::CONST_ACTIVE;
+        $this->roles = ['ROLE_USER'];
+        $this->status = self::CONST_NOT_VERIFIED;
         $this->verificationToken = hash('md5', uniqid());
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
@@ -126,6 +127,8 @@ class User implements UserInterface
     public function setEmail($email)
     {
         $this->email = $email;
+
+        return $this;
     }
 
     public function getPlainPassword()
@@ -136,6 +139,8 @@ class User implements UserInterface
     public function setPlainPassword($password)
     {
         $this->plainPassword = $password;
+
+        return $this;
     }
 
     public function getPassword()
@@ -146,6 +151,8 @@ class User implements UserInterface
     public function setPassword($password)
     {
         $this->password = $password;
+
+        return $this;
     }
 
     public function getSalt()
@@ -184,6 +191,15 @@ class User implements UserInterface
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    public function activateUser()
+    {
+        $this->status = self::CONST_ACTIVE;
+
+        $this->verificationToken = '';
 
         return $this;
     }
@@ -349,6 +365,11 @@ class User implements UserInterface
         return $this;
     }
 
+    public function isNotVerifiedUser()
+    {
+        return  $this->status == self::CONST_NOT_VERIFIED;
+    }
+
     public function isBlockedUser()
     {
         return  $this->status == self::CONST_BLOCKED;
@@ -362,5 +383,10 @@ class User implements UserInterface
     public function isAdmin()
     {
         return in_array("ROLE_ADMIN", $this->roles) ? true : false;
+    }
+
+    public function isBlocked()
+    {
+        return $this->status == self::CONST_BLOCKED;
     }
 }

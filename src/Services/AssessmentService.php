@@ -16,24 +16,29 @@ use Doctrine\ORM\EntityManager;
 use LogicException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Security;
 
 class AssessmentService
 {
     private $user;
     private $assessmentRepository;
     private $entityManager;
+    private $security;
 
-    public function __construct(AssessmentRepository $assessmentRepository, TokenStorageInterface $tokenStorage, EntityManager $entityManager)
+    public function __construct(AssessmentRepository $assessmentRepository, TokenStorageInterface $tokenStorage, EntityManager $entityManager, Security $security)
     {
         $this->assessmentRepository = $assessmentRepository;
         if($tokenStorage->getToken())
             $this->user = $tokenStorage->getToken()->getUser();
         $this->entityManager = $entityManager;
+        $this->security = $security;
     }
 
     public function canEditAssessment(Post $post)
     {
-        if (isset($this->user)) {
+        if (isset($this->user) && !($this->user->isBlocked())) {
             return $this->user == $post->getUser();
         }
         return false;
@@ -41,8 +46,13 @@ class AssessmentService
 
     public function createForUser(string $assessmentValue, Post $post)
     {
+
         if ($this->canEditAssessment($post)) {
             throw new LogicException('You can not put yourself assessments');
+        }
+
+        if ($this->user->isBlocked()) {
+            throw new AccessDeniedException('This user is blocked');
         }
 
         $assessment = new Assessment();
@@ -74,6 +84,10 @@ class AssessmentService
 
     public function deleteForUser(Post $post)
     {
+        if ($this->user->isBlocked()) {
+            throw new AccessDeniedException('This user is blocked');
+        }
+
         if (!$this->assessmentRepository->findByUserAndPost($post, $this->user))
         {
             throw new LogicException('Assessment not exist');

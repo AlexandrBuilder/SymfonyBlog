@@ -177,6 +177,8 @@ class PostController extends Controller
      */
     public function publishedAction(Request $request, Post $post)
     {
+        $this->denyAccessUnlessGranted(PostVoter::EDIT, $post);
+
         $this->postService->published($post);
 
         $this->addFlash(

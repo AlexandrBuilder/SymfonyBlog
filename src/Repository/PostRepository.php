@@ -133,30 +133,6 @@ class PostRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('p')
             ->join('p.user', 'u');
 
-//        if (isset($options['email']) && strlen($options['email']) > 0) {
-//            $query
-//                ->andWhere('u.email = :email')
-//                ->setParameter('email', $options['email']);
-//        }
-//
-//        if (isset($options['status']) && strlen($options['status']) > 0) {
-//            $query
-//                ->andWhere('p.status = :status')
-//                ->setParameter('status', $options['status']);
-//        }
-//
-//        if (isset($options['date_from'])) {
-//            $query
-//                ->andWhere('p.publicationDate > :publicationDatFrom')
-//                ->setParameter('publicationDatFrom', $options['date_from']);
-//        }
-//
-//        if (isset($options['date_to'])) {
-//            $query
-//                ->andWhere('p.publicationDate < :publicationDateTo')
-//                ->setParameter('publicationDateTo', $options['date_to']);
-//        }
-
         return $this->getParametrsFilterQuery($query, $options)->getQuery();
     }
 

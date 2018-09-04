@@ -63,6 +63,9 @@ class AppCustomAuthenticator extends AbstractGuardAuthenticator
         if(!password_verify($credentials['password'], $user->getPassword())) {
             throw new AuthenticationException('Invalid user data');
         }
+        if($user->isBlocked()) {
+            throw new AuthenticationException('This account is blocked');
+        }
         return true;
     }
 

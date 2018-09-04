@@ -61,7 +61,7 @@ class UserService
             throw new BadRequestHttpException("User not find");
         }
 
-        $user = $user->setVerificationToken('');
+        $user->activateUser();
         $this->entityManager->flush();
 
         return $user;
@@ -84,6 +84,9 @@ class UserService
     {
         if ($user->isAdmin()){
             throw new LogicException('Admin can not be blocked');
+        }
+        if ($user->isNotVerifiedUser()()){
+            throw new LogicException('No verified user can not be blocked');
         }
         if ($user->isBlockedUser()){
             throw new LogicException('User blocked already');
