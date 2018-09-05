@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Comment;
@@ -8,18 +7,17 @@ use App\Form\CommentType;
 use App\Form\PostAdminType;
 use App\Form\PostType;
 use App\Helpers\Paginator;
-use App\Repository\CommentRepository;
 use App\Repository\PostRepository;
 use App\Security\Voter\CommentVoter;
 use App\Security\Voter\PostVoter;
 use App\Services\CommentService;
 use App\Services\PostService;
+use App\Services\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-
 
 class PostController extends Controller
 {
@@ -27,19 +25,39 @@ class PostController extends Controller
     private $router;
     private $commentService;
     private $paginator;
+    private $userService;
 
-    public function __construct(PostService $postService, CommentService $commentService, UrlGeneratorInterface $router,Paginator $paginator)
-    {
+    /**
+     * Construct
+     *
+     * PostController constructor.
+     *
+     * @param PostService $postService
+     * @param CommentService $commentService
+     * @param UserService $userService
+     * @param UrlGeneratorInterface $router
+     * @param Paginator $paginator
+     */
+    public function __construct(
+        PostService $postService,
+        CommentService $commentService,
+        UserService $userService,
+        UrlGeneratorInterface $router,
+        Paginator $paginator
+    ) {
         $this->postService = $postService;
         $this->router = $router;
         $this->commentService = $commentService;
         $this->paginator = $paginator;
+        $this->userService = $userService;
     }
 
     /**
      * @Route("/", name="homepage", methods="GET")
+     * @param PostRepository $postRepository
+     * @return Response
      */
-    public function index(Request $request, PostRepository $postRepository): Response
+    public function index(PostRepository $postRepository): Response
     {
         $paginator = $this
             ->paginator
@@ -50,16 +68,21 @@ class PostController extends Controller
 
         return $this->render('post/index.html.twig', [
             'posts' => $this->paginator->getItems(),
-            'paginator' => $this->paginator->getPaginator()
+            'paginator' => $this->paginator->getPaginator(),
+            'top_five_user' => $this->userService->getTopFiveUser(),
+            'top_five_post' => $this->postService->getTopFivePost()
         ]);
     }
 
     /**
      * @Route("/post/new", name="post_new", methods="GET|POST")
+     * @param Request $request
+     * @return Response
      */
     public function new(Request $request): Response
     {
         $post = new Post();
+
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
@@ -83,14 +106,19 @@ class PostController extends Controller
 
     /**
      * @Route("/post/{id}", name="post_show", methods="GET|POST")
+     * @param Request $request
+     * @param Post $post
+     * @return Response
      */
-    public function show(Request $request, Post $post, CommentRepository $commentRepository): Response
+    public function show(Request $request, Post $post): Response
     {
         $this->denyAccessUnlessGranted(PostVoter::VIEW, $post);
 
         $commentsForm = $this->addComment($request, $post);
-        if($commentsForm === true)
+
+        if ($commentsForm === true) {
             return $this->redirectToRoute('post_show', ['id' => $post->getId()]);
+        }
 
         return $this->render('post/show.html.twig', [
             'post' => $post,
@@ -150,6 +178,7 @@ class PostController extends Controller
     public function addComment(Request $request, Post $post)
     {
         $comment = new Comment();
+
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
@@ -174,6 +203,9 @@ class PostController extends Controller
 
     /**
      * @Route("/published/{id}", name="post_published")
+     * @param Request $request
+     * @param Post $post
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function publishedAction(Request $request, Post $post)
     {

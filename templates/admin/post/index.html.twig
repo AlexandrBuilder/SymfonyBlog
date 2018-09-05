@@ -18,7 +18,17 @@
             <tr>
                 <td>{{post.publicationDate|date("d.m.Y")}}</td>
                 <td>{{post.title}}</td>
-                <td>{{post.status}}</td>
+                <td>
+                    {% if post.isDraftStatus %}
+                        <span class="text-secondary">{{post.status}}</span>
+                    {% elseif post.isOnModerationStatus %}
+                        <span class="text-info">{{post.status}}</span>
+                    {% elseif post.isPublishedStatus %}
+                        <span class="text-success">{{post.status}}</span>
+                    {% elseif post.isOnDeclinedStatus %}
+                        <span class="text-danger">{{post.status}}</span>
+                    {% endif %}
+                </td>
                 <td>
                     <a class="user-action" href="{{ path('post_show', {'id': post.id}) }}">View</a>
                     <a class="user-action" href="{{ path('admin_post_edit', {'id': post.id}) }}">Edit</a>

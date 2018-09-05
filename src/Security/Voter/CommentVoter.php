@@ -52,5 +52,4 @@ class CommentVoter extends Voter
     {
         return $this->commentService->canEditComment($comment);
     }
-
 }

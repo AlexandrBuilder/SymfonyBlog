@@ -85,7 +85,8 @@ class Assessment
         return $this;
     }
 
-    public function equalAssessment(Assessment $assessment) {
+    public function equalAssessment(Assessment $assessment)
+    {
         if ($assessment->getUser() == $this->user && $assessment->getAssessment() == $this->assessment
             && $assessment->getPost() == $this->post) {
             return true;

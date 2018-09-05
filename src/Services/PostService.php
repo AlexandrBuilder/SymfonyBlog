@@ -8,7 +8,6 @@
 
 namespace App\Services;
 
-
 use App\Entity\Post;
 use App\Repository\PostRepository;
 use DateTime;
@@ -24,11 +23,17 @@ class PostService
     private $commentService;
     private $postRepository;
 
-    public function __construct(TokenStorageInterface $tokenStorage, EntityManager $entityManager, AssessmentService $assessmentService, CommentService $commentService, PostRepository $postRepository)
-    {
+    public function __construct(
+        TokenStorageInterface $tokenStorage,
+        EntityManager $entityManager,
+        AssessmentService $assessmentService,
+        CommentService $commentService,
+        PostRepository $postRepository
+    ) {
         $this->entityManager = $entityManager;
-        if($tokenStorage->getToken())
+        if ($tokenStorage->getToken()) {
             $this->user = $tokenStorage->getToken()->getUser();
+        }
 
         $this->assessmentService = $assessmentService;
         $this->commentService = $commentService;
@@ -64,12 +69,9 @@ class PostService
         $this->entityManager->flush();
     }
 
-    public function isHostPost(Post $post) {
+    public function isHostPost(Post $post)
+    {
         return $this->user == $post->getUser();
-    }
-
-    public function haveUserRoleAdmin() {
-        return in_array("ROLE_ADMIN", $this->user->getRoles());
     }
 
     public function canViewPost(Post $post)
@@ -77,21 +79,48 @@ class PostService
         if ($post->isVerified()) {
             return true;
         }
-        if ($this->isHostPost($post) && !($this->user->isBlocked()) || $this->haveUserRoleAdmin()) {
+
+        if (is_object($this->user) && (($this->isHostPost($post) && !($this->user->isBlocked()))
+                || $this->user->isAdmin())) {
             return true;
         }
+
         return false;
     }
 
-    public function canEditPost(Post $post) {
-        if (($this->isHostPost($post) && $post->isEditMode() && !($this->user->isBlocked())) || $this->haveUserRoleAdmin()) {
+    public function canEditPost(Post $post)
+    {
+        if (($this->isHostPost($post) && $post->isEditMode() && !($this->user->isBlocked()))
+            || $this->user->isAdmin()) {
             return true;
         }
+
         return false;
     }
 
-    public function canDeletePost(Post $post) {
+    public function canDeletePost(Post $post)
+    {
         return $this->isHostPost($post) && !($this->user->isBlocked());
     }
 
+    private function cmp($userOne, $userTwo)
+    {
+        return $userOne['rating'] < $userTwo['rating'];
+    }
+
+    public function getTopFivePost()
+    {
+        $posts=$this->postRepository->findVerifiedPost();
+
+        $postRating=[];
+
+        foreach ($posts as $key => $post) {
+            $postRating[$key]['post'] = $post;
+            $postRating[$key]['rating'] = $post->getRatingPost();
+        }
+
+        usort($postRating, [PostService::class,'cmp']);
+
+        return array_slice($postRating, 0, 5);
+    }
 }

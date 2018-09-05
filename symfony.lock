@@ -89,6 +89,9 @@
     "egulias/email-validator": {
         "version": "2.1.5"
     },
+    "escapestudios/symfony2-coding-standard": {
+        "version": "3.x-dev"
+    },
     "fig/link-util": {
         "version": "1.0.0"
     },

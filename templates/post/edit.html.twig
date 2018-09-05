@@ -1,8 +1,9 @@
-{% extends 'posts.html.twig' %}
+{% extends 'user_template.html.twig' %}
 
-{% block title %}Edit Post{% endblock %}
+{% block title %}{% endblock %}
 
 {% block body %}
+
     <h2>Edit Post</h2>
 
     {% for message in app.flashes('success_post') %}
@@ -16,4 +17,5 @@
     <a href="{{ path('homepage') }}">back to list</a>
 
     {{ include('post/_delete_form.html.twig') }}
+
 {% endblock %}

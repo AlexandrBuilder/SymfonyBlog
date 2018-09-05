@@ -8,7 +8,6 @@
 
 namespace App\Helpers;
 
-
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -30,8 +29,7 @@ class Paginator
         $this->router = $router;
         $this->queryParametrs = $requestStack->getCurrentRequest()->query->all();
 
-        foreach ($requestStack->getCurrentRequest()->attributes->all() as $key=>$attribute)
-        {
+        foreach ($requestStack->getCurrentRequest()->attributes->all() as $key => $attribute) {
             if (!(preg_match('/^_.+$/', $key, $matches))) {
                 $this->queryParametrs[$key] = $attribute;
             }
@@ -42,7 +40,7 @@ class Paginator
         $this->currPage = $currPage ? $currPage : 1;
     }
 
-    public function paginate($query, $itemCount, $maxItems = 1, $maxPages = 5)
+    public function paginate($query, $itemCount, $maxItems = 10, $maxPages = 5)
     {
         $this->query = $query;
         $this->itemCount = $itemCount;
@@ -53,9 +51,10 @@ class Paginator
 
     private function paginateConstructor()
     {
-        if($this->itemCount) {
+        if ($this->itemCount) {
             $paginatorArray = $this->paginateBuilder();
-            $this->paginator = '<nav aria-label="Page navigation example"> <ul class="pagination justify-content-center">';
+            $this->paginator = '<nav aria-label="Page navigation example"> 
+                <ul class="pagination justify-content-center">';
             $this->paginator .= $this->setPrevPage();
 
             foreach ($paginatorArray as $paginatorItem) {
@@ -86,22 +85,25 @@ class Paginator
         $rgtVar = $this->currPage + (ceil($this->maxPages/2) - 1) ;
         $rgt = $rgtVar < $pageCount ? $rgtVar : $pageCount;
 
-        if($lft > 1) {
+        if ($lft > 1) {
             $paginatorArray[] = $this->setTagPagonator(1);
         }
 
-        if($lft > 2)
+        if ($lft > 2) {
             $paginatorArray['leftPoints'] = '...';
+        }
 
-        for($i = $lft; $i <= $rgt; $i++) {
+        for ($i = $lft; $i <= $rgt; $i++) {
             $paginatorArray[] = $this->setTagPagonator($i);
         }
 
-        if($rgt < $pageCount - 1)
+        if ($rgt < $pageCount - 1) {
             $paginatorArray['rightPoints'] = '...';
+        }
 
-        if($rgt < $pageCount)
+        if ($rgt < $pageCount) {
             $paginatorArray[] = $this->setTagPagonator((int)$pageCount);
+        }
 
         return $paginatorArray;
     }
@@ -111,31 +113,34 @@ class Paginator
         $addClass = 'disabled';
         $url = '';
 
-        if($this->currPage-1 >= 1) {
+        if (($this->currPage-1) >= 1) {
             $addClass = '';
             $url = $this->getPageUrl($this->currPage - 1);
         }
 
-        return '<li class="page-item '.$addClass.'"> <a class="page-link" href="'. $url .'" aria-label="Previous"> <span aria-hidden="true">&laquo;</span> <span class="sr-only">Previous</span> </a> </li>';
+        return '<li class="page-item '.$addClass.'"> <a class="page-link" href="'. $url .'" aria-label="Previous"> 
+            <span aria-hidden="true">&laquo;</span> <span class="sr-only">Previous</span> </a> </li>';
     }
     public function setNextPage()
     {
         $addClass = 'disabled';
         $url = '';
 
-        if( $this->currPage + 1 <= $this->itemCount) {
+        if (($this->currPage + 1) <= $this->itemCount) {
             $addClass = '';
             $url = $this->getPageUrl($this->currPage + 1);
         }
 
-        return '<li class="page-item '.$addClass.'"> <a class="page-link" href="'. $url .'" aria-label="Next"> <span aria-hidden="true">&raquo;</span> <span class="sr-only">Next</span> </a> </li>';
+        return '<li class="page-item '.$addClass.'"> <a class="page-link" href="'. $url .'" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>  <span class="sr-only">Next</span> </a> </li>';
     }
 
     public function setTagPagonator($num)
     {
         $addClass = $num == $this->currPage ? 'active' : '';
 
-        return '<li class="page-item '.$addClass.'"><a class="page-link" href="'.$this->getPageUrl($num).'">'.$num.'</a></li>';
+        return '<li class="page-item '.$addClass.'"><a class="page-link" href="'.$this->getPageUrl($num).'">'.$num.
+            '</a></li>';
     }
 
     public function getItems()
@@ -152,9 +157,9 @@ class Paginator
         }
     }
 
-    public function getPageUrl($numPage) {
+    public function getPageUrl($numPage)
+    {
         $arrayPage = array_merge($this->queryParametrs, ['page' => $numPage]);
         return $this->router->generate($this->url, $arrayPage);
     }
-
 }

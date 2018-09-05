@@ -8,7 +8,6 @@
 
 namespace App\Helpers;
 
-
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\RequestStack;
 

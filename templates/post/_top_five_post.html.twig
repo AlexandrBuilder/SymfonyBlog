@@ -1,0 +1,9 @@
+<div class="background-index block-rating">
+
+    <h5>Top posts</h5>
+
+    {% for post_key, post in top_five_post %}
+        <span class="user-rating">{{ post_key+1 }}. <a href="{{ path('post_show', {'id': post.post.id}) }}">{{ post.post.title }}</a> ({{ post.rating }})</span>
+    {% endfor %}
+
+</div>

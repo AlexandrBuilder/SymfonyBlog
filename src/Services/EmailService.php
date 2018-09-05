@@ -8,7 +8,6 @@
 
 namespace App\Services;
 
-
 use App\Entity\User;
 
 class EmailService
@@ -20,15 +19,15 @@ class EmailService
     private $templating;
     private $adminEmail;
 
-    public function __construct( $adminEmail, \Swift_Mailer $mailer, \Twig_Environment $templating)
+    public function __construct($adminEmail, \Swift_Mailer $mailer, \Twig_Environment $templating)
     {
         $this->mailer = $mailer;
         $this->templating = $templating;
         $this->adminEmail = $adminEmail;
     }
 
-    public function sendMail(User $user, string $title, array $renderOptions, string $typeRender) {
-
+    public function sendMail(User $user, string $title, array $renderOptions, string $typeRender)
+    {
         $message = (new \Swift_Message($title))
             ->setFrom($this->adminEmail)
             ->setTo($user->getEmail())
@@ -42,5 +41,4 @@ class EmailService
 
         $this->mailer ->send($message);
     }
-
 }

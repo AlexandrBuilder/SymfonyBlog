@@ -58,7 +58,7 @@ class User implements UserInterface
     private $plainPassword;
 
     /**
-     * @ORM\Column(type="string", length=128)
+     * @ORM\Column(type="string", length=128, nullable=true)
      */
     private $verificationToken;
 
@@ -175,6 +175,12 @@ class User implements UserInterface
     {
         return $this->id;
     }
+    public function getNewVerificationToken()
+    {
+        $this->verificationToken = hash('md5', uniqid());
+
+        return $this;
+    }
 
     public function getVerificationToken(): ?string
     {
@@ -199,13 +205,16 @@ class User implements UserInterface
     {
         $this->status = self::CONST_ACTIVE;
 
-        $this->verificationToken = '';
+        $this->verificationToken = null;
 
         return $this;
     }
 
-    public function isActive() {
-        return strlen($this->verificationToken) ? false : true;
+    public function removeTokenUser()
+    {
+        $this->verificationToken = null;
+
+        return $this;
     }
 
     /**

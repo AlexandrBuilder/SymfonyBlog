@@ -1,4 +1,4 @@
-{% extends 'posts.html.twig' %}
+{% extends 'user_template.html.twig' %}
 
 {% block title %}{% endblock %}
 
@@ -12,6 +12,7 @@
         </div>
         <div>
             <b>Rating:</b>
+
             {% if user.rating > 0 %}
                 <span class="text-success">
                     {{ user.rating }}
@@ -25,6 +26,7 @@
                     {{ user.rating }}
                 </span>
             {% endif %}
+
         </div>
     </div>
     <h2>Publications:</h2>
@@ -38,6 +40,7 @@
         </tr>
         </thead>
         <tbody>
+
         {% for post in posts %}
             <tr>
                 <td>{{post.publicationDate|date("d.m.Y")}}</td>
@@ -46,6 +49,7 @@
                 <td><a href="{{ path('post_show', {'id': post.id}) }}">View</a></td>
             </tr>
         {% endfor %}
+
         </tbody>
     </table>
     {{ paginator|raw }}

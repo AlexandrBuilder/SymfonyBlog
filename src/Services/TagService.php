@@ -24,7 +24,7 @@ class TagService
     {
         $tags = $this->repositoryTag->findAll();
         $tagsArray = [];
-        foreach ($tags as $tag){
+        foreach ($tags as $tag) {
             $tagsArray[]=$tag->getArrayTag();
         }
         return $tagsArray;

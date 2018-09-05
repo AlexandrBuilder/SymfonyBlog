@@ -8,24 +8,19 @@
 
 namespace App\Controller;
 
-namespace App\Controller;
-
+use App\Form\ChangePasswordType;
 use App\Form\UserType;
 use App\Entity\User;
-use App\Services\AuthService;
-use App\Services\emailService;
+use App\Repository\UserRepository;
 use App\Services\UserService;
-use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-
-class AuthController  extends AbstractController
+class AuthController extends AbstractController
 {
     private $userService;
 
@@ -37,10 +32,9 @@ class AuthController  extends AbstractController
     /**
      * @Route("/register", name="registration")
      * @param Request $request
-     * @param UserPasswordEncoderInterface $passwordEncoder
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function registerAction(Request $request, UserPasswordEncoderInterface $passwordEncoder)
+    public function registerAction(Request $request)
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -58,8 +52,8 @@ class AuthController  extends AbstractController
         }
 
         return $this->render('auth/register.html.twig', [
-            'form' => $form->createView()]
-        );
+            'form' => $form->createView()
+            ]);
     }
 
     /**
@@ -75,14 +69,15 @@ class AuthController  extends AbstractController
 
         return $this->render('auth/login.html.twig', [
             'last_username' => $lastUsername,
-            'error'         => $error,
+            'error' => $error,
         ]);
     }
 
     /**
      * @Route("/logout", name="logout")
      */
-    public function logoutAction() {
+    public function logoutAction()
+    {
 
     }
 
@@ -100,4 +95,68 @@ class AuthController  extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/change", name="get_token")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @return Response
+     */
+    public function getTokenAction(Request $request, UserRepository $userRepository)
+    {
+        $email = $request->request->get('email');
+
+        if (!empty($email)) {
+            $user = $userRepository->findByEmail($email);
+
+            if (!$user) {
+                $this->addFlash(
+                    'error_email',
+                    'This user email is not exist'
+                );
+            } else {
+                $this->userService->getToken($user);
+                $this->addFlash(
+                    'success_email',
+                    'A message was sent to your email to change the password'
+                );
+            }
+        }
+
+        return $this->render('auth/change_password_email.html.twig', []);
+    }
+
+
+    /**
+     * @Route("/change/{verificationToken}", name="change_password")
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @param $verificationToken
+     * @return Response
+     */
+    public function changePasswordAction(Request $request, UserRepository $userRepository, $verificationToken)
+    {
+        $user = $userRepository->findByVerificationToken($verificationToken);
+
+        if (empty($user)) {
+            throw new BadRequestHttpException("User not find");
+        }
+
+        $form = $this->createForm(ChangePasswordType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->userService->changePassword($user);
+
+            $this->addFlash(
+                'success_password',
+                'Password change successfully'
+            );
+
+            return $this->redirectToRoute('login');
+        }
+
+        return $this->render('auth/change_password_password.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
 }

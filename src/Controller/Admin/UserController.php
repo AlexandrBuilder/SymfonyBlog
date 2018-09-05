@@ -24,8 +24,12 @@ class UserController extends AbstractController
     private $userAdminFilterService;
     private $userService;
 
-    public function __construct(Paginator $paginator, FormHelper $formHelper, UserAdminFilterService $userAdminFilterService, UserService $userService)
-    {
+    public function __construct(
+        Paginator $paginator,
+        FormHelper $formHelper,
+        UserAdminFilterService $userAdminFilterService,
+        UserService $userService
+    ) {
         $this->paginator = $paginator;
         $this->formHelper = $formHelper;
         $this->userAdminFilterService = $userAdminFilterService;
@@ -34,8 +38,10 @@ class UserController extends AbstractController
 
     /**
      * @Route("/admin/user", name="admin_user")
+     * @param Request $request
+     * @return Response
      */
-    public function index(Request $request, UserRepository $userRepository)
+    public function index(Request $request)
     {
         $this->formHelper
             ->addElementsName('email');
@@ -58,8 +64,12 @@ class UserController extends AbstractController
 
     /**
      * @Route("/admin/user/activate/{id}", name="admin_user_activate")
+     * @param Request $request
+     * @param User $user
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function activateAction(Request $request, User $user) {
+    public function activateAction(Request $request, User $user)
+    {
 
         $this->userService->setActiveStatusUser($user);
 
@@ -73,9 +83,12 @@ class UserController extends AbstractController
 
     /**
      * @Route("/admin/user/block/{id}", name="admin_user_block")
+     * @param Request $request
+     * @param User $user
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function blockAction(Request $request, User $user) {
-
+    public function blockAction(Request $request, User $user)
+    {
         $this->userService->setBlockStatusUser($user);
 
         $this->addFlash(
@@ -85,5 +98,4 @@ class UserController extends AbstractController
 
         return $this->redirect($request->server->get('HTTP_REFERER'));
     }
-
 }

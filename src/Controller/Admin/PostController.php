@@ -21,8 +21,11 @@ class PostController extends AbstractController
     private $formHelper;
     private $adminFilterService;
 
-    public function __construct(Paginator $paginator, FormHelper $formHelper, PostAdminFilterService $adminFilterService)
-    {
+    public function __construct(
+        Paginator $paginator,
+        FormHelper $formHelper,
+        PostAdminFilterService $adminFilterService
+    ) {
         $this->paginator = $paginator;
         $this->formHelper = $formHelper;
         $this->adminFilterService = $adminFilterService;
@@ -30,8 +33,10 @@ class PostController extends AbstractController
 
     /**
      * @Route("/admin", name="admin_post_index")
+     * @param Request $request
+     * @return Response
      */
-    public function index(Request $request, PostRepository $postRepository)
+    public function index(Request $request)
     {
         $this->formHelper
             ->addElementsName('email')
@@ -58,6 +63,9 @@ class PostController extends AbstractController
 
     /**
      * @Route("/admin/post/{id}/edit", name="admin_post_edit")
+     * @param Request $request
+     * @param Post $post
+     * @return Response
      */
     public function edit(Request $request, Post $post): Response
     {

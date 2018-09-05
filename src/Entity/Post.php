@@ -149,7 +149,8 @@ class Post
         return $this;
     }
 
-    public function __toString () {
+    public function __toString()
+    {
         return $this->title;
     }
 
@@ -232,12 +233,12 @@ class Post
 
     public function isPublishedStatus()
     {
-        return $this->status == self::CONST_DECLINED ? true : false;
+        return $this->status == self::CONST_PUBLISHED ? true : false;
     }
 
     public function isOnDeclinedStatus()
     {
-        return $this->status == self::CONST_PUBLISHED ? true : false;
+        return $this->status == self::CONST_DECLINED ? true : false;
     }
 
     public function getPublicationDate(): ?\DateTimeInterface
@@ -328,21 +329,23 @@ class Post
         return $rating;
     }
 
-    public function getIsUserEvaluated(User $user) {
-
+    public function getIsUserEvaluated(User $user)
+    {
         foreach ($this->assessments as $assessment) {
-            if($assessment->getUser() == $user)
+            if ($assessment->getUser() == $user) {
                 return true;
+            }
         }
 
         return false;
     }
 
-    public function getIsUserAsseeement(User $user) {
-
+    public function getIsUserAsseeement(User $user)
+    {
         foreach ($this->assessments as $assessment) {
-            if($assessment->getUser() == $user)
+            if ($assessment->getUser() == $user) {
                 return $assessment->getAssessment();
+            }
         }
     }
 }

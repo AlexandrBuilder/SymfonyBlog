@@ -23,8 +23,13 @@ class UserController extends AbstractController
     private $userRepository;
     private $userService;
 
-    public function __construct(UrlGeneratorInterface $router, Paginator $paginator, PostRepository $postRepository, UserRepository $userRepository, UserService $userService)
-    {
+    public function __construct(
+        UrlGeneratorInterface $router,
+        Paginator $paginator,
+        PostRepository $postRepository,
+        UserRepository $userRepository,
+        UserService $userService
+    ) {
         $this->router = $router;
         $this->paginator = $paginator;
         $this->postRepository = $postRepository;
@@ -41,8 +46,9 @@ class UserController extends AbstractController
             throw new NotFoundHttpException('Not exist user');
         }
 
-        if($this->getUser() == $user)
+        if ($this->getUser() == $user) {
             return $this->redirectToRoute('user_me');
+        }
 
         $paginator = $this
             ->paginator

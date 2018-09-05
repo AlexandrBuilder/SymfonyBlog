@@ -36,7 +36,15 @@
             <tr>
                 <th>{{user.id}}</th>
                 <td>{{user.email}}</td>
-                <td>{{user.status}}</td>
+                <td>
+                    {% if user.isNotVerifiedUser %}
+                        <span class="text-secondary">{{user.status}}</span>
+                    {% elseif user.isActivateStatusUser %}
+                        <span class="text-success">{{user.status}}</span>
+                    {% elseif user.isBlockedUser %}
+                        <span class="text-danger">{{user.status}}</span>
+                    {% endif %}
+                </td>
                 <td>
                     {% if not user.isAdmin and not user.isNotVerifiedUser %}
                         {% if user.isBlockedUser %}

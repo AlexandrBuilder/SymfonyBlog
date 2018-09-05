@@ -8,12 +8,10 @@
 
 namespace App\Services;
 
-
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use LogicException;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -24,8 +22,12 @@ class UserService
     private $entityManager;
     private $emailService;
 
-    public function __construct(UserRepository $userRepository, UserPasswordEncoderInterface $userPasswordEncoder, EntityManager $entityManager, EmailService $emailService)
-    {
+    public function __construct(
+        UserRepository $userRepository,
+        UserPasswordEncoderInterface $userPasswordEncoder,
+        EntityManager $entityManager,
+        EmailService $emailService
+    ) {
         $this->userRepository = $userRepository;
         $this->userPasswordEncoder = $userPasswordEncoder;
         $this->entityManager = $entityManager;
@@ -43,6 +45,15 @@ class UserService
         $this->sendConfimMail($user);
     }
 
+    public function changePassword(User $user)
+    {
+        $password = $this->userPasswordEncoder->encodePassword($user, $user->getPlainPassword());
+        $user->setPassword($password);
+        $user->removeTokenUser();
+
+        $this->entityManager->flush();
+    }
+
     public function sendConfimMail(User $user)
     {
         $renderOptions = [
@@ -57,7 +68,7 @@ class UserService
     {
         $user = $this->userRepository->findByVerificationToken($verificationToken);
 
-        if(empty($user)) {
+        if (empty($user)) {
             throw new BadRequestHttpException("User not find");
         }
 
@@ -67,13 +78,36 @@ class UserService
         return $user;
     }
 
+    public function getToken($user)
+    {
+        if (empty($user)) {
+            throw new BadRequestHttpException("User not find");
+        }
+
+        $user->getNewVerificationToken();
+
+        $this->entityManager->flush();
+
+        $this->sendChangePasswordMail($user);
+    }
+
+    public function sendChangePasswordMail(User $user)
+    {
+        $renderOptions = [
+            'template' => 'emails/change_password.html.twig',
+            'options' => ['user' => $user]
+        ];
+
+        $this->emailService->sendMail($user, 'Change password', $renderOptions, EmailService::CONST_TEXT_HTML);
+    }
+
     public function getArrayUsers($emailSubStr)
     {
         $users = $this->userRepository->findBySubStrEmail($emailSubStr);
 
         $usersArray = [];
 
-        foreach ($users as $user){
+        foreach ($users as $user) {
             $usersArray[] = $user->getArrayUsers();
         }
 
@@ -82,13 +116,13 @@ class UserService
 
     public function setBlockStatusUser(User $user)
     {
-        if ($user->isAdmin()){
+        if ($user->isAdmin()) {
             throw new LogicException('Admin can not be blocked');
         }
-        if ($user->isNotVerifiedUser()()){
+        if ($user->isNotVerifiedUser()) {
             throw new LogicException('No verified user can not be blocked');
         }
-        if ($user->isBlockedUser()){
+        if ($user->isBlockedUser()) {
             throw new LogicException('User blocked already');
         }
         $user->setBlockStatusUser();
@@ -97,11 +131,31 @@ class UserService
 
     public function setActiveStatusUser(User $user)
     {
-        if ($user->isActive()){
+        if ($user->isActivateStatusUser()) {
             throw new LogicException('User activate already');
         }
         $user->setActiveStatusUser();
         $this->entityManager->flush($user);
     }
 
+    private function cmp($userOne, $userTwo)
+    {
+        return $userOne['rating'] < $userTwo['rating'];
+    }
+
+    public function getTopFiveUser()
+    {
+        $users=$this->userRepository->findAll();
+
+        $userRating=[];
+
+        foreach ($users as $key => $user) {
+            $userRating[$key]['user'] = $user;
+            $userRating[$key]['rating'] = $user->getRating();
+        }
+
+        usort($userRating, array(UserService::class,'cmp'));
+
+        return array_slice($userRating, 0, 5);
+    }
 }

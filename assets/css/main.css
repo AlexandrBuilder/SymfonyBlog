@@ -174,3 +174,15 @@ li.active {
 .description {
     margin-bottom: 20px;
 }
+.user-rating {
+    display: block;
+    line-height: 18px;
+    margin-bottom: 10px;
+}
+.block-rating {
+    margin-bottom: 20px;
+}
+.forgot-password {
+    display: block;
+    margin-top: 20px;
+}

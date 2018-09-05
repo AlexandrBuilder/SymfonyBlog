@@ -1,20 +1,24 @@
-{% extends 'posts.html.twig' %}
+{% extends 'user_template.html.twig' %}
 
-{% block title %}Post{% endblock %}
+{% block title %}{% endblock %}
 
 {% block body %}
+
     {% for message in app.flashes('success_post') %}
         <div class="alert alert-success" role="alert">
             {{ message }}
         </div>
     {% endfor %}
+
     <div class="post-show">
         <div class="post-index">
             <h2>{{ post.title }}</h2>
             <ul class="tags">
+
                 {% for tag in post.tags %}
                     <li>{{ tag }}</li>
                 {% endfor %}
+
             </ul>
             <div class="description">{{ (post.description |raw) }}</div>
             <div class="row">
@@ -26,7 +30,7 @@
                 </div>
                 <div class="col-sm-6 col-md-4 col-lg-3">
                     <div class="rating-box">
-                        {{ include('assessment/new.html.twig') }}
+                        {{ include('assessment/_new.html.twig') }}
                     </div>
                 </div>
             </div>
@@ -35,17 +39,20 @@
         <hr>
         <div class="comments">
             <h2>Comments:</h2>
+
             {% for message in app.flashes('success_comment') %}
                 <div class="alert alert-success" role="alert">
                     {{ message }}
                 </div>
             {% endfor %}
+
             {% for comment in post.comments %}
                 <div class="comment">
                     <div class="autor-comment">Autor: <a href="{{ path('user_show', {'id': comment.user.id}) }}">{{ comment.user.name }}</a></div>
                     <div class="autor-content">{{ comment.comments }}</div>
                 </div>
             {% endfor %}
+
             {{ comments_form.content | raw }}
         </div>
     </div>

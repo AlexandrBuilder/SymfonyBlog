@@ -8,7 +8,6 @@
 
 namespace App\Services;
 
-
 use App\Entity\Assessment;
 use App\Entity\Post;
 use App\Repository\AssessmentRepository;
@@ -27,11 +26,16 @@ class AssessmentService
     private $entityManager;
     private $security;
 
-    public function __construct(AssessmentRepository $assessmentRepository, TokenStorageInterface $tokenStorage, EntityManager $entityManager, Security $security)
-    {
+    public function __construct(
+        AssessmentRepository $assessmentRepository,
+        TokenStorageInterface $tokenStorage,
+        EntityManager $entityManager,
+        Security $security
+    ) {
         $this->assessmentRepository = $assessmentRepository;
-        if($tokenStorage->getToken())
+        if ($tokenStorage->getToken()) {
             $this->user = $tokenStorage->getToken()->getUser();
+        }
         $this->entityManager = $entityManager;
         $this->security = $security;
     }
@@ -88,8 +92,7 @@ class AssessmentService
             throw new AccessDeniedException('This user is blocked');
         }
 
-        if (!$this->assessmentRepository->findByUserAndPost($post, $this->user))
-        {
+        if (!$this->assessmentRepository->findByUserAndPost($post, $this->user)) {
             throw new LogicException('Assessment not exist');
         }
         $assessment = $this->assessmentRepository->findByUserAndPost($post, $this->user);
@@ -103,5 +106,4 @@ class AssessmentService
         $this->entityManager->remove($assessment);
         $this->entityManager->flush();
     }
-
 }

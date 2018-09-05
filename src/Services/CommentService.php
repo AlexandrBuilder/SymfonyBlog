@@ -8,7 +8,6 @@
 
 namespace App\Services;
 
-
 use App\Entity\Comment;
 use App\Entity\Post;
 use Doctrine\ORM\EntityManager;
@@ -22,8 +21,9 @@ class CommentService
     public function __construct(TokenStorageInterface $tokenStorage, EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-        if($tokenStorage->getToken())
+        if ($tokenStorage->getToken()) {
             $this->user = $tokenStorage->getToken()->getUser();
+        }
     }
 
     public function create(Comment $comment, Post $post)
@@ -50,5 +50,4 @@ class CommentService
     {
         return !$this->user->isBlocked();
     }
-
 }

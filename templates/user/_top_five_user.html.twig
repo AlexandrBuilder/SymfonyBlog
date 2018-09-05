@@ -1,0 +1,9 @@
+<div class="background-index block-rating">
+
+    <h5>Top users</h5>
+
+    {% for user_key, user in top_five_user %}
+        <span class="user-rating">{{ user_key+1 }}. <a href="{{ path('user_show', {'id': user.user.id}) }}">{{ user.user.name }}</a> ({{ user.rating }})</span>
+    {% endfor %}
+
+</div>

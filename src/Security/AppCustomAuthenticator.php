@@ -49,7 +49,7 @@ class AppCustomAuthenticator extends AbstractGuardAuthenticator
             throw new AuthenticationException('Password is empty');
         }
         $user = $this->repositoryUser->findOneByEmail([$credentials['email']]);
-        if(!isset($user)) {
+        if (!isset($user)) {
             throw new AuthenticationException('This account not exist');
         }
         return $user;
@@ -57,13 +57,13 @@ class AppCustomAuthenticator extends AbstractGuardAuthenticator
 
     public function checkCredentials($credentials, UserInterface $user)
     {
-        if(!$user->isActive()) {
+        if (!$user->isActivateStatusUser()) {
             throw new AuthenticationException('Account not verified');
         }
-        if(!password_verify($credentials['password'], $user->getPassword())) {
+        if (!password_verify($credentials['password'], $user->getPassword())) {
             throw new AuthenticationException('Invalid user data');
         }
-        if($user->isBlocked()) {
+        if ($user->isBlocked()) {
             throw new AuthenticationException('This account is blocked');
         }
         return true;
@@ -71,10 +71,10 @@ class AppCustomAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        if($request->getPathInfo() === $this->router->generate('login')) {
+        if ($request->getPathInfo() === $this->router->generate('login')) {
             $request->getSession()->set('username', $request->request->get('username'));
 
-            return new RedirectResponse('/');;
+            return new RedirectResponse('/');
         }
         return null;
     }

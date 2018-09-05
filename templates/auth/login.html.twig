@@ -1,4 +1,5 @@
-{% extends 'base.html.twig' %}
+{% extends 'user_template.html.twig' %}
+
 {% block body%}
     <div class="auth">
         <h2>Sign in to Symfony-Blog</h2>
@@ -7,6 +8,12 @@
                 {{ error.message }}
             </div>
         {% endif %}
+
+        {% for message in app.flashes('success_password') %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
 
         <div class="row">
             <div class="col-sm-12 col-md-8 col-lg-6">
@@ -24,6 +31,7 @@
                     <button type="submit" class="btn btn-primary">Sing in</button>
                     <a href="{{ path('registration') }}" class="btn btn-secondary" role="button">Create an account</a>
                 </form>
+                <a class="forgot-password" href="{{ path('get_token') }}">Forgot your password?</a>
             </div>
         </div>
     </div>

@@ -21,7 +21,8 @@ class AssessmentRepository extends ServiceEntityRepository
         parent::__construct($registry, Assessment::class);
     }
 
-    public function findByUserAndPost(Post $post, User $user) {
+    public function findByUserAndPost(Post $post, User $user)
+    {
         return $this->createQueryBuilder('a')
             ->join('a.post', 'p')
             ->join('a.user', 'u')
@@ -32,33 +33,4 @@ class AssessmentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
-
-//    /**
-//     * @return Assessment[] Returns an array of Assessment objects
-//     */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Assessment
-    {
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

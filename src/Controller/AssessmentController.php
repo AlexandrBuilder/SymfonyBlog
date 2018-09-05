@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Repository\PostRepository;
-use App\Security\Voter\AssessmentVoter;
 use App\Services\AssessmentService;
 use App\Services\PostService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,17 +23,6 @@ class AssessmentController extends AbstractController
         $this->assessmentService = $assessmentService;
         $this->postService = $postService;
     }
-
-    /**
-     * @Route("/", name="assessment")
-     */
-    public function index()
-    {
-        return $this->render('assessament/index.html.twig', [
-            'controller_name' => 'AssesmentController',
-        ]);
-    }
-
     /**
      * @Route("/new", name="new_assessment")
      * @param Request $request
@@ -46,16 +34,16 @@ class AssessmentController extends AbstractController
         $post = $postRepository->find($request->request->get('post_id'));
         $assessment = $request->request->get('assessment');
 
-        if(!$post) {
+        if (!$post) {
             throw new BadRequestHttpException('This post not exist');
         }
-        if(!$assessment) {
+        if (!$assessment) {
             throw new BadRequestHttpException('Assessment post not exist');
         }
 
         $assessment = $this->assessmentService->createForUser($assessment, $post);
 
-        return $this->render('assessment/new.html.twig', [
+        return $this->render('assessment/_new.html.twig', [
             'assessment' => $assessment,
             'rating' => $post->getRatingPost(),
             'post' => $post
@@ -71,13 +59,13 @@ class AssessmentController extends AbstractController
     public function deleteAction(Request $request, PostRepository $postRepository)
     {
         $post = $postRepository->find($request->request->get('post_id'));
-        if(!$post) {
+        if (!$post) {
             throw new BadRequestHttpException('This post not exist');
         }
 
         $this->assessmentService->deleteForUser($post);
 
-        return $this->render('assessment/delete.html.twig', [
+        return $this->render('assessment/_delete.html.twig', [
             'rating' => $post->getRatingPost(),
             'post' => $post
         ]);
